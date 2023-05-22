@@ -1,23 +1,25 @@
 package sudoku;
 
 public class GeneratorMain {
-	public static int nbnumbers = 8;
-	public static int nbrowsperblock = 4;
-	public static int nbcolsperblock = 2;
-	public static long seed = 19;
-	public static int nbessais = 2;
-	public static int chosenLevel = 4;
+	public static int nbnumbers = 9;
+	public static int nbrowsperblock = 3;
+	public static int nbcolsperblock = 3;
+	public static long seed = 2;
+	public static int nbessais = 1;
+	public static int chosenLevel = 1;
 	public static int chosenNbSteps = 200;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Board board = new Board(nbnumbers, nbrowsperblock, nbcolsperblock, seed);
+		Board board = new Board(nbnumbers, nbrowsperblock, nbcolsperblock, seed, chosenLevel);
 		//board.writeBoard();
 		Puzzle puzzle = new Puzzle(board);
 		puzzle.findBestPuzzle(chosenLevel, chosenNbSteps, nbessais);
 		puzzle.writePuzzle();
 		System.out.println("level: " + puzzle.level);
 		System.out.println("nb essais: " + puzzle.nbTests);
+		//puzzle.showsteps = true;
+		//puzzle.solver(puzzle.puzzleTab, puzzle.nbEmptyCells, 1, 0, chosenLevel);
 		
 		/*
 		Integer sudokutest[][] = {

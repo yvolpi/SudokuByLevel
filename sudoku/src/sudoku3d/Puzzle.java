@@ -80,7 +80,7 @@ public class Puzzle {
 				puzzleTab[rowpos][colpos][d3pos] = 0;
 				puzzleTab[nbnumbers-rowpos-1][nbnumbers-colpos-1][d3pos] = 0;
 				nbEmptyCells += 2;
-				if (rowpos == colpos && rowpos == nbnumbers/2 + 1) {
+				if (nbnumbers%2 == 0 && rowpos == colpos && rowpos == nbnumbers/2) {
 					nbEmptyCells--;
 				}
 				level = 1;
@@ -93,7 +93,7 @@ public class Puzzle {
 					puzzleTab[rowpos][colpos][d3pos] = board.values[rowpos][colpos][d3pos];
 					puzzleTab[nbnumbers-rowpos-1][nbnumbers-colpos-1][d3pos] = board.values[nbnumbers-rowpos-1][nbnumbers-colpos-1][d3pos];
 					nbEmptyCells -= 2;
-					if (rowpos == colpos && rowpos == nbnumbers/2 + 1) {
+					if (nbnumbers%2 == 0 && rowpos == colpos && rowpos == nbnumbers/2 + 1) {
 						nbEmptyCells++;
 					}
 					level = previousLvl;
@@ -1498,7 +1498,7 @@ public class Puzzle {
 					}
 				}
 			}
-			int group[] = searchSwordFishGroupRowsRecursive(sudoku, missingValue, sudokuflags, valueMissingCols, groupSize,
+			int group[] = searchSwordFishGroupColsRecursive(sudoku, missingValue, sudokuflags, valueMissingCols, groupSize,
 					i+1, partialGroup, step+1, nbCandidatesPos);
 			if (group != null) {
 				return group;

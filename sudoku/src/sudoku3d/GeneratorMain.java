@@ -6,14 +6,14 @@ public class GeneratorMain {
 	public static int nbcolsperblock = 2;
 	public static int d3size = 2;
 	
-	public static long seed = 10;
+	public static long seed = 11;
 	public static int nbessais = 1;
-	public static int chosenLevel = 2;
+	public static int chosenLevel = 3;
 	public static int chosenNbSteps = 200;
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		Board board = new Board(nbnumbers, nbrowsperblock, nbcolsperblock, d3size, seed);
+		Board board = new Board(nbnumbers, nbrowsperblock, nbcolsperblock, d3size, seed, chosenLevel);
 		//board.writeBoard();
 		Puzzle puzzle = new Puzzle(board);
 		puzzle.findBestPuzzle(chosenLevel, chosenNbSteps, nbessais);

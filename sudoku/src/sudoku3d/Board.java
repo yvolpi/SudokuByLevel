@@ -13,7 +13,7 @@ public class Board {
 	
 	Integer values[][][];
 	
-	public Board(int nbnumbers, int nbrowsperblock, int nbcolsperblock, int d3size, long seed) {
+	public Board(int nbnumbers, int nbrowsperblock, int nbcolsperblock, int d3size, long seed, int chosenLevel) {
 		super();
 		this.nbnumbers = nbnumbers;
 		this.nbrowsperblock = nbrowsperblock;
@@ -28,10 +28,10 @@ public class Board {
 				}
 			}
 		}
-		buildSoluce(values);
+		buildSoluce(values,chosenLevel);
 	}
 	
-	boolean buildSoluce(Integer tempValues[][][]) {
+	boolean buildSoluce(Integer tempValues[][][], int chosenLevel) {
 		for (int i=0;i<nbnumbers;i++) {
 			for (int j=0;j<nbnumbers;j++) {
 				for (int l=0;l<d3size;l++) {
@@ -40,8 +40,11 @@ public class Board {
 						boolean soluceFound = false;
 						while (candidates.size()>0 && !soluceFound) {
 							Integer candidate = candidates.get(r.nextInt(candidates.size()));
+							for (int x=1;x<chosenLevel;x++) {
+								candidate = candidates.get(r.nextInt(candidates.size()));
+							}
 							tempValues[i][j][l] = candidate;
-							soluceFound = buildSoluce(tempValues);
+							soluceFound = buildSoluce(tempValues,chosenLevel);
 							if (soluceFound) {
 								return true;
 							} else {

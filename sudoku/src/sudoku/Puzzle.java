@@ -14,9 +14,11 @@ public class Puzzle {
 	int nbEmptyCells;
 	boolean solvable;
 	public static Random r;
+	boolean showsteps;
 	
 	public Puzzle (Board board) {
 		this.board = board;
+		showsteps = false;
 		nbnumbers = board.nbnumbers;
 		nbrowsperblock = board.nbrowsperblock;
 		nbcolsperblock = board.nbcolsperblock;
@@ -70,7 +72,7 @@ public class Puzzle {
 				puzzleTab[rowpos][colpos] = 0;
 				puzzleTab[nbnumbers-rowpos-1][nbnumbers-colpos-1] = 0;
 				nbEmptyCells += 2;
-				if (rowpos == colpos && rowpos == nbnumbers/2 + 1) {
+				if (nbnumbers%2 == 1 && rowpos == colpos && rowpos == nbnumbers/2) {
 					nbEmptyCells--;
 				}
 				level = 1;
@@ -83,16 +85,13 @@ public class Puzzle {
 					puzzleTab[rowpos][colpos] = board.values[rowpos][colpos];
 					puzzleTab[nbnumbers-rowpos-1][nbnumbers-colpos-1] = board.values[nbnumbers-rowpos-1][nbnumbers-colpos-1];
 					nbEmptyCells -= 2;
-					if (rowpos == colpos && rowpos == nbnumbers/2 + 1) {
+					if (nbnumbers%2 == 1 && rowpos == colpos && rowpos == nbnumbers/2) {
 						nbEmptyCells++;
 					}
 					level = previousLvl;
 					//System.out.println("level to hard, previous level = " + level);
 					//System.out.println();
 				} else if (level>tempBestLvl) {
-					if (level == 8) {
-						System.out.println("level 8, nbtests= " + nbTests);
-					}
 					tempBestLvl = level;
 					previousLvl = level;
 					tempBestNbTests = nbTests;
@@ -136,6 +135,14 @@ public class Puzzle {
 			return 1;
 		} else {
 			//search for unique solution
+			/*int counte = 0;
+			for (int i=0;i<nbnumbers;i++) {
+				for (int j=0;j<nbnumbers;j++) {
+					if (sudoku[i][j] == 0) {
+						counte++;
+					}
+				}
+			}*/
 			boolean sudokuflags[][][] = new boolean[nbnumbers][nbnumbers][nbnumbers];
 			for (int i=0;i<nbnumbers;i++) {
 				for (int j=0;j<nbnumbers;j++) {
@@ -155,6 +162,9 @@ public class Puzzle {
 						}
 						if (count == 1) {
 							//unique solution for the cell
+							if (showsteps) {
+								System.out.println("unique candidate r"+i+" c"+j+" k"+firstcandidate);
+							}
 							sudoku[i][j] = firstcandidate;
 							int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 							sudoku[i][j] = 0;
@@ -203,6 +213,9 @@ public class Puzzle {
 						}
 						if (count == 1) {
 							//unique cell for the number k+1
+							if (showsteps) {
+								System.out.println("unique position row r"+ro+" for k"+(k+1)+" c"+pos);
+							}
 							sudoku[ro][pos] = k+1;
 							int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 							sudoku[ro][pos] = 0;
@@ -228,6 +241,9 @@ public class Puzzle {
 						}
 						if (count == 1) {
 							//unique cell for the number k+1
+							if (showsteps) {
+								System.out.println("unique position col c"+c+" for k"+(k+1)+" r"+pos);
+							}
 							sudoku[pos][c] = k+1;
 							int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 							sudoku[pos][c] = 0;
@@ -258,6 +274,9 @@ public class Puzzle {
 						}
 						if (count == 1) {
 							//unique cell for the number k+1
+							if (showsteps) {
+								System.out.println("unique position block b"+b+" for k"+(k+1)+" r"+posr + " c" + posc);
+							}
 							sudoku[posr][posc] = k+1;
 							int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 							sudoku[posr][posc] = 0;
@@ -280,6 +299,9 @@ public class Puzzle {
 					return 0;
 				}
 				if (singleSoluce != null && singleSoluce[2] != -1) {
+					if (showsteps) {
+						System.out.println("unique candidate for r"+singleSoluce[0]+" c"+singleSoluce[1] + " k" + singleSoluce[2]);
+					}
 					sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
 					int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 					sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
@@ -290,6 +312,9 @@ public class Puzzle {
 					return 0;
 				}
 				if (singleSoluce != null && singleSoluce[2] != -1) {
+					if (showsteps) {
+						System.out.println("unique position for k"+singleSoluce[2]+" r"+singleSoluce[0] + " c" + singleSoluce[1]);
+					}
 					sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
 					int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 					sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
@@ -314,6 +339,9 @@ public class Puzzle {
 						return 0;
 					}
 					if (singleSoluce != null && singleSoluce[2] != -1) {
+						if (showsteps) {
+							System.out.println("unique candidate for r"+singleSoluce[0]+" c"+singleSoluce[1] + " k" + singleSoluce[2]);
+						}
 						sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
 						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 						sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
@@ -324,6 +352,9 @@ public class Puzzle {
 						return 0;
 					}
 					if (singleSoluce != null && singleSoluce[2] != -1) {
+						if (showsteps) {
+							System.out.println("unique position for k"+singleSoluce[2]+" r"+singleSoluce[0] + " c" + singleSoluce[1]);
+						}
 						sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
 						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 						sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
@@ -343,6 +374,9 @@ public class Puzzle {
 						return 0;
 					}
 					if (singleSoluce != null && singleSoluce[2] != -1) {
+						if (showsteps) {
+							System.out.println("unique candidate for r"+singleSoluce[0]+" c"+singleSoluce[1] + " k" + singleSoluce[2]);
+						}
 						sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
 						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 						sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
@@ -353,6 +387,9 @@ public class Puzzle {
 						return 0;
 					}
 					if (singleSoluce != null && singleSoluce[2] != -1) {
+						if (showsteps) {
+							System.out.println("unique position for k"+singleSoluce[2]+" r"+singleSoluce[0] + " c" + singleSoluce[1]);
+						}
 						sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
 						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 						sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
@@ -378,6 +415,9 @@ public class Puzzle {
 							return 0;
 						}
 						if (singleSoluce != null && singleSoluce[2] != -1) {
+							if (showsteps) {
+								System.out.println("unique candidate for r"+singleSoluce[0]+" c"+singleSoluce[1] + " k" + singleSoluce[2]);
+							}
 							sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
 							int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 							sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
@@ -388,6 +428,9 @@ public class Puzzle {
 							return 0;
 						}
 						if (singleSoluce != null && singleSoluce[2] != -1) {
+							if (showsteps) {
+								System.out.println("unique position for k"+singleSoluce[2]+" r"+singleSoluce[0] + " c" + singleSoluce[1]);
+							}
 							sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
 							int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 							sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
@@ -657,6 +700,10 @@ public class Puzzle {
 								if (r != rowBlock) {
 									for(int c=0;c<nbcolsperblock;c++) {
 										if (sudoku[rowBlockLocation + r][colBlockLocation + c] == 0 && sudokuflags[rowBlockLocation + r][colBlockLocation + c][k]) {
+											if (showsteps) {
+												System.out.println("deduction cross rowblock row" + i + ", b" + colBlockLocation + " for k" + (k+1));
+												System.out.println("Remove candidate k" + (k+1) + " for r" + (rowBlockLocation + r) + " c" + (colBlockLocation + c));
+											}
 											sudokuflags[rowBlockLocation + r][colBlockLocation + c][k] = false;
 											hasChanged = true;
 											hasSimplyfied = true;
@@ -692,6 +739,10 @@ public class Puzzle {
 								if (c != colBlock) {
 									for(int r=0;r<nbrowsperblock;r++) {
 										if (sudoku[rowBlockLocation + r][colBlockLocation + c] == 0 && sudokuflags[rowBlockLocation + r][colBlockLocation + c][k]) {
+											if (showsteps) {
+												System.out.println("deduction cross colblock col" + j + ", b" + rowBlockLocation + " for k" + (k+1));
+												System.out.println("Remove candidate k" + (k+1) + " for r" + (rowBlockLocation + r) + " c" + (colBlockLocation + c));
+											}
 											sudokuflags[rowBlockLocation + r][colBlockLocation + c][k] = false;
 											hasChanged = true;
 											hasSimplyfied = true;
@@ -736,6 +787,10 @@ public class Puzzle {
 							for(int c=0;c<nbnumbers;c++) {
 								if (c < colBlock || c >= colBlock + nbcolsperblock) {
 									if (sudoku[posBlocRow][c] == 0 && sudokuflags[posBlocRow][c][k]) {
+										if (showsteps) {
+											System.out.println("deduction cross blockrow block" + b + ", row" + posBlocRow + " for k" + (k+1));
+											System.out.println("Remove candidate k" + (k+1) + " for r" + posBlocRow + " c" + c);
+										}
 										sudokuflags[posBlocRow][c][k] = false;
 										hasChanged = true;
 										hasSimplyfied = true;
@@ -747,6 +802,10 @@ public class Puzzle {
 							for(int ro=0;ro<nbnumbers;ro++) {
 								if (ro < rowBlock || ro >= rowBlock + nbrowsperblock) {
 									if (sudoku[ro][posBlocCol] == 0 && sudokuflags[ro][posBlocCol][k]) {
+										if (showsteps) {
+											System.out.println("deduction cross blockcol block" + b + ", col" + posBlocCol + " for k" + (k+1));
+											System.out.println("Remove candidate k" + (k+1) + " for r" + ro + " c" + posBlocCol);
+										}
 										sudokuflags[ro][posBlocCol][k] = false;
 										hasChanged = true;
 										hasSimplyfied = true;
@@ -808,8 +867,15 @@ public class Puzzle {
 							if (notIngroup) {
 								//suppress candidates
 								for (int cand=0;cand<groupCandidates.size();cand++) {
-									
 									if (sudokuflags[ro][col][groupCandidates.get(cand)]) {
+										if (showsteps) {
+											System.out.print("visible group row " + ro + " for values ");
+											for (int g=0;g<groupSize;g++) {
+												System.out.print((groupCandidates.get(g)+1) + " " );
+											}
+											System.out.println();
+											System.out.println("Remove candidate k" + (groupCandidates.get(cand)+1) + " r" + ro + " c" + col);
+										}
 										sudokuflags[ro][col][groupCandidates.get(cand)] = false;
 										hasSimplyfied = true;
 									}
@@ -865,6 +931,14 @@ public class Puzzle {
 								//suppress candidates
 								for (int cand=0;cand<groupCandidates.size();cand++) {
 									if (sudokuflags[ro][c][groupCandidates.get(cand)]) {
+										if (showsteps) {
+											System.out.print("visible group col " + c + " for values ");
+											for (int g=0;g<groupSize;g++) {
+												System.out.print((groupCandidates.get(g)+1) + " " );
+											}
+											System.out.println();
+											System.out.println("Remove candidate k" + (groupCandidates.get(cand)+1) + " r" + ro + " c" + c);
+										}
 										sudokuflags[ro][c][groupCandidates.get(cand)] = false;
 										hasSimplyfied = true;
 									}
@@ -930,6 +1004,14 @@ public class Puzzle {
 								int c =  colblock + pos%nbcolsperblock;
 								for (int cand=0;cand<groupCandidates.size();cand++) {
 									if (sudokuflags[ro][c][groupCandidates.get(cand)]) {
+										if (showsteps) {
+											System.out.print("visible group block " + b + " for values ");
+											for (int g=0;g<groupSize;g++) {
+												System.out.print((groupCandidates.get(g)+1) + " " );
+											}
+											System.out.println();
+											System.out.println("Remove candidate k" + (groupCandidates.get(cand)+1) + " r" + ro + " c" + c);
+										}
 										sudokuflags[ro][c][groupCandidates.get(cand)] = false;
 										hasSimplyfied = true;
 									}
@@ -1087,6 +1169,14 @@ public class Puzzle {
 								//suppress candidates
 								for (int cand=0;cand<groupCandidatesPos.size();cand++) {
 									if (sudoku[row][groupCandidatesPos.get(cand)]==0 && sudokuflags[row][groupCandidatesPos.get(cand)][k]) {
+										if (showsteps) {
+											System.out.print("naked group row " + row + " for values ");
+											for (int g=0;g<groupSize;g++) {
+												System.out.print((groupNumbers[g]+1) + " " );
+											}
+											System.out.println();
+											System.out.println("Remove candidate k" + (k+1) + " r" + row + " c" + groupCandidatesPos.get(cand));
+										}
 										sudokuflags[row][groupCandidatesPos.get(cand)][k] = false;
 										hasSimplyfied = true;
 									}
@@ -1155,6 +1245,14 @@ public class Puzzle {
 								//suppress candidates
 								for (int cand=0;cand<groupCandidatesPos.size();cand++) {
 									if (sudoku[groupCandidatesPos.get(cand)][col]==0 && sudokuflags[groupCandidatesPos.get(cand)][col][k]) {
+										if (showsteps) {
+											System.out.print("naked group col " + col + " for values ");
+											for (int g=0;g<groupSize;g++) {
+												System.out.print((groupNumbers[g]+1) + " " );
+											}
+											System.out.println();
+											System.out.println("Remove candidate k" + (k+1) + " r" + groupCandidatesPos.get(cand) + " c" + col);
+										}
 										sudokuflags[groupCandidatesPos.get(cand)][col][k] = false;
 										hasSimplyfied = true;
 									}
@@ -1217,6 +1315,14 @@ public class Puzzle {
 									int ro =  rowblock + groupCandidatesPos.get(cand)/nbcolsperblock;
 									int c =  colblock + groupCandidatesPos.get(cand)%nbcolsperblock;
 									if (sudokuflags[ro][c][k]) {
+										if (showsteps) {
+											System.out.print("naked group block " + b + " for values ");
+											for (int g=0;g<groupSize;g++) {
+												System.out.print((groupNumbers[g]+1) + " " );
+											}
+											System.out.println();
+											System.out.println("Remove candidate k" + (k+1) + " r" + ro + " c" + c);
+										}
 										sudokuflags[ro][c][k] = false;
 										hasSimplyfied = true;
 									}
@@ -1376,6 +1482,18 @@ public class Puzzle {
 									}
 								}
 								if (sudoku[ro][c]==0 && notInGroup && sudokuflags[ro][c][k]) {
+									if (showsteps) {
+										System.out.print("swordfish rows " );
+										for (int g=0;g<groupSize;g++) {
+											System.out.print(groupRows[g] + " " );
+										}
+										System.out.print(", k" + (k+1) + ", pos ");
+										for (int g=0;g<groupSize;g++) {
+											System.out.print(candidatesCol.get(g) + " " );
+										}
+										System.out.println();
+										System.out.println("Remove candidate k" + (k+1) + " r" + ro + " c" + c);
+									}
 									sudokuflags[ro][c][k] = false;
 									hasSimplyfied = true;
 								}
@@ -1423,6 +1541,18 @@ public class Puzzle {
 									}
 								}
 								if (sudoku[ro][c]==0 && notInGroup && sudokuflags[ro][c][k]) {
+									if (showsteps) {
+										System.out.print("swordfish cols " );
+										for (int g=0;g<groupSize;g++) {
+											System.out.print(groupCols[g] + " " );
+										}
+										System.out.print(", k" + (k+1) + ", pos ");
+										for (int g=0;g<groupSize;g++) {
+											System.out.print(candidatesRow.get(g) + " " );
+										}
+										System.out.println();
+										System.out.println("Remove candidate k" + (k+1) + " r" + ro + " c" + c);
+									}
 									sudokuflags[ro][c][k] = false;
 									hasSimplyfied = true;
 								}
@@ -1489,7 +1619,7 @@ public class Puzzle {
 					}
 				}
 			}
-			int group[] = searchSwordFishGroupRowsRecursive(sudoku, missingValue, sudokuflags, valueMissingCols, groupSize,
+			int group[] = searchSwordFishGroupColsRecursive(sudoku, missingValue, sudokuflags, valueMissingCols, groupSize,
 					i+1, partialGroup, step+1, nbCandidatesPos);
 			if (group != null) {
 				return group;

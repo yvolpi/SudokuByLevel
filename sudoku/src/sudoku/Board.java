@@ -12,7 +12,7 @@ public class Board {
 	
 	Integer values[][];
 	
-	public Board(int nbnumbers, int nbrowsperblock, int nbcolsperblock, long seed) {
+	public Board(int nbnumbers, int nbrowsperblock, int nbcolsperblock, long seed, int lvlchoice) {
 		super();
 		this.nbnumbers = nbnumbers;
 		this.nbrowsperblock = nbrowsperblock;
@@ -24,10 +24,10 @@ public class Board {
 				values[i][j] = 0;
 			}
 		}
-		buildSoluce(values);
+		buildSoluce(values,lvlchoice);
 	}
 	
-	boolean buildSoluce(Integer tempValues[][]) {
+	boolean buildSoluce(Integer tempValues[][], int lvlchoice) {
 		for (int i=0;i<nbnumbers;i++) {
 			for (int j=0;j<nbnumbers;j++) {
 				if (tempValues[i][j]==0) {
@@ -35,8 +35,11 @@ public class Board {
 					boolean soluceFound = false;
 					while (candidates.size()>0 && !soluceFound) {
 						Integer candidate = candidates.get(r.nextInt(candidates.size()));
+						for (int x=1;x<lvlchoice;x++) {
+							candidate = candidates.get(r.nextInt(candidates.size()));
+						}
 						tempValues[i][j] = candidate;
-						soluceFound = buildSoluce(tempValues);
+						soluceFound = buildSoluce(tempValues,lvlchoice);
 						if (soluceFound) {
 							return true;
 						} else {
