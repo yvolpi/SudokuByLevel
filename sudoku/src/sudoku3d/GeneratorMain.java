@@ -6,9 +6,9 @@ public class GeneratorMain {
 	public static int nbcolsperblock = 2;
 	public static int d3size = 2;
 	
-	public static long seed = 11;
+	public static long seed = 12;
 	public static int nbessais = 1;
-	public static int chosenLevel = 3;
+	public static int chosenLevel = 1;
 	public static int chosenNbSteps = 200;
 
 	public static void main(String[] args) {

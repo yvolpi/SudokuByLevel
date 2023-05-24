@@ -14,10 +14,12 @@ public class Puzzle {
 	int nbTests;
 	int nbEmptyCells;
 	boolean solvable;
+	boolean showsteps;
 	public static Random r;
 	
 	public Puzzle (Board board) {
 		this.board = board;
+		showsteps = false;
 		nbnumbers = board.nbnumbers;
 		nbrowsperblock = board.nbrowsperblock;
 		nbcolsperblock = board.nbcolsperblock;
@@ -327,7 +329,7 @@ public class Puzzle {
 			
 			
 			//pairs, triplets?
-			/*int n = (nbnumbers/2)-1;
+			int n = (nbnumbers/2)-1;
 			int levelMethod = 3;
 			for (int groupSize=2;groupSize<=n;groupSize++) {
 				levelMethod++;
@@ -335,26 +337,32 @@ public class Puzzle {
 				level = Math.max(levelMethod, lvlmax);
 				if (level > chosenLevel) return 2;
 				boolean visibleGroups = simplifyByVisibleGroups(sudoku, sudokuflags, groupSize);
-				if (visibleGroups) {
-					deductionCross = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+				while (visibleGroups) {
+					visibleGroups = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+					for (int g=2;g<level/2;g++) {
+						visibleGroups = visibleGroups || simplifyByVisibleGroups(sudoku, sudokuflags, g);
+						visibleGroups = visibleGroups || simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, g);
+					}
+					
+					visibleGroups = visibleGroups || simplifyByVisibleGroups(sudoku, sudokuflags, groupSize);
 					singleSoluce = searchCellUniqueSolution(sudoku, sudokuflags);
-					if (singleSoluce != null && singleSoluce[2] == -1) {
+					if (singleSoluce != null && singleSoluce[3] == -1) {
 						return 0;
 					}
-					if (singleSoluce != null && singleSoluce[2] != -1) {
-						sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
+					if (singleSoluce != null && singleSoluce[3] != -1) {
+						sudoku[singleSoluce[0]][singleSoluce[1]][singleSoluce[2]] = singleSoluce[3];
 						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
-						sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
+						sudoku[singleSoluce[0]][singleSoluce[1]][singleSoluce[2]] = 0;
 						return solve;
 					}
 					singleSoluce = searchUniquePosSolution(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
-					if (singleSoluce != null && singleSoluce[2] == -1) {
+					if (singleSoluce != null && singleSoluce[3] == -1) {
 						return 0;
 					}
-					if (singleSoluce != null && singleSoluce[2] != -1) {
-						sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
+					if (singleSoluce != null && singleSoluce[3] != -1) {
+						sudoku[singleSoluce[0]][singleSoluce[1]][singleSoluce[2]] = singleSoluce[3];
 						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
-						sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
+						sudoku[singleSoluce[0]][singleSoluce[1]][singleSoluce[2]] = 0;
 						return solve;
 					}
 				}
@@ -364,26 +372,30 @@ public class Puzzle {
 				if (level > chosenLevel) return 2;
 				//nakedGroup
 				boolean nakedGroup = simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize);
-				if (nakedGroup) {
-					deductionCross = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+				while (nakedGroup) {
+					nakedGroup = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+					for (int g=2;g<=level/2;g++) {
+						nakedGroup = nakedGroup || simplifyByVisibleGroups(sudoku, sudokuflags, g);
+						nakedGroup = nakedGroup || simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, g);
+					}
 					singleSoluce = searchCellUniqueSolution(sudoku, sudokuflags);
-					if (singleSoluce != null && singleSoluce[2] == -1) {
+					if (singleSoluce != null && singleSoluce[3] == -1) {
 						return 0;
 					}
-					if (singleSoluce != null && singleSoluce[2] != -1) {
-						sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
+					if (singleSoluce != null && singleSoluce[3] != -1) {
+						sudoku[singleSoluce[0]][singleSoluce[1]][singleSoluce[2]] = singleSoluce[3];
 						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
-						sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
+						sudoku[singleSoluce[0]][singleSoluce[1]][singleSoluce[2]] = 0;
 						return solve;
 					}
 					singleSoluce = searchUniquePosSolution(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
-					if (singleSoluce != null && singleSoluce[2] == -1) {
+					if (singleSoluce != null && singleSoluce[3] == -1) {
 						return 0;
 					}
-					if (singleSoluce != null && singleSoluce[2] != -1) {
-						sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
+					if (singleSoluce != null && singleSoluce[3] != -1) {
+						sudoku[singleSoluce[0]][singleSoluce[1]][singleSoluce[2]] = singleSoluce[3];
 						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
-						sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
+						sudoku[singleSoluce[0]][singleSoluce[1]][singleSoluce[2]] = 0;
 						return solve;
 					}
 				}
@@ -396,31 +408,34 @@ public class Puzzle {
 				if (level > chosenLevel) return 2;
 				//swordfishes
 				boolean swordfish = simplifyBySwordFishes(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize);
-				if (swordfish) {
-					deductionCross = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+				while (swordfish) {
+					swordfish = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
 					for (int groupSize2=2;groupSize2<=n;groupSize2++) {
-						simplifyByVisibleGroups(sudoku, sudokuflags, groupSize2);
-						simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize2);
-						singleSoluce = searchCellUniqueSolution(sudoku, sudokuflags);
-						if (singleSoluce != null && singleSoluce[2] == -1) {
-							return 0;
-						}
-						if (singleSoluce != null && singleSoluce[2] != -1) {
-							sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
-							int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
-							sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
-							return solve;
-						}
-						singleSoluce = searchUniquePosSolution(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
-						if (singleSoluce != null && singleSoluce[2] == -1) {
-							return 0;
-						}
-						if (singleSoluce != null && singleSoluce[2] != -1) {
-							sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
-							int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
-							sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
-							return solve;
-						}
+						swordfish = swordfish || simplifyByVisibleGroups(sudoku, sudokuflags, groupSize2);
+						swordfish = swordfish || simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize2);
+					}
+					for (int groupSize2=2;groupSize2<=groupSize;groupSize2++) {
+						swordfish = swordfish || simplifyBySwordFishes(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize);
+					}
+					singleSoluce = searchCellUniqueSolution(sudoku, sudokuflags);
+					if (singleSoluce != null && singleSoluce[3] == -1) {
+						return 0;
+					}
+					if (singleSoluce != null && singleSoluce[3] != -1) {
+						sudoku[singleSoluce[0]][singleSoluce[1]][singleSoluce[2]] = singleSoluce[3];
+						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
+						sudoku[singleSoluce[0]][singleSoluce[1]][singleSoluce[2]] = 0;
+						return solve;
+					}
+					singleSoluce = searchUniquePosSolution(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+					if (singleSoluce != null && singleSoluce[3] == -1) {
+						return 0;
+					}
+					if (singleSoluce != null && singleSoluce[3] != -1) {
+						sudoku[singleSoluce[0]][singleSoluce[1]][singleSoluce[2]] = singleSoluce[3];
+						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
+						sudoku[singleSoluce[0]][singleSoluce[1]][singleSoluce[2]] = 0;
+						return solve;
 					}
 				}
 			}
@@ -431,7 +446,7 @@ public class Puzzle {
 			level = Math.max(levelMethod, lvlmax);
 			if (level > chosenLevel) return 2;
 			//try candidates
-			int emptyCellTry[] = searchCellXSolutions(sudoku, sudokuflags, 2);
+			/*int emptyCellTry[] = searchCellXSolutions(sudoku, sudokuflags, 2);
 			if (emptyCellTry != null) {
 				nbTests += 2*nbEmptyCells;
 				this.nbTests += 2*nbEmptyCells;
@@ -1334,118 +1349,119 @@ public class Puzzle {
 		return null;
 	}
 	
-	boolean simplifyBySwordFishes(Integer sudoku[][], boolean sudokuflags[][][], boolean numberMissingRow[][], boolean numberMissingCol[][], boolean numberMissingBlock[][], int groupSize) {
+	boolean simplifyBySwordFishes(Integer sudoku[][][], boolean sudokuflags[][][][], boolean numberMissingRow[][][], boolean numberMissingCol[][][], boolean numberMissingBlock[][][], int groupSize) {
 		//for example X-Wing for position pairs
 		boolean hasSimplyfied = false;
 		for (int k=0;k<nbnumbers;k++) {
-			int countKPut = 0;
-			for (int b=0;b<nbnumbers;b++) {
-				if (numberMissingBlock[b][k]) {
-					countKPut++;
-				}
-			}
-			if (countKPut >= 2*groupSize) {
-				//rows
-				ArrayList<Integer> valueMissingRows = new ArrayList<Integer>();
-				for (int row=0;row<nbnumbers;row++) {
-					if (numberMissingRow[row][k]) {
-						valueMissingRows.add(row);
+			for (int l=0;l<d3size;l++) {
+				int countKPut = 0;
+				for (int b=0;b<nbnumbers;b++) {
+					if (numberMissingBlock[b][l][k]) {
+						countKPut++;
 					}
 				}
-				for (int i=0;i<countKPut+1-groupSize;i++) {
-					int groupRows[] = new int[groupSize];
-					groupRows[0] = valueMissingRows.get(i);
-					int nbCandidatesPos = 0;
-					for (int c=0;c<nbnumbers;c++) {
-						if (sudoku[groupRows[0]][c] == 0 && sudokuflags[groupRows[0]][c][k]) {
-							nbCandidatesPos++;
+				if (countKPut >= 2*groupSize) {
+					//rows
+					ArrayList<Integer> valueMissingRows = new ArrayList<Integer>();
+					for (int row=0;row<nbnumbers;row++) {
+						if (numberMissingRow[row][l][k]) {
+							valueMissingRows.add(row);
 						}
 					}
-					groupRows = searchSwordFishGroupRowsRecursive(sudoku, k, sudokuflags, valueMissingRows, groupSize,
-							i+1, groupRows, 1, nbCandidatesPos);
-					if (groupRows != null) {
-						//found
-						ArrayList<Integer> candidatesCol = new ArrayList<Integer>();
-						for (int j=0;j<groupSize;j++) {
-							for (int c=0;c<nbnumbers;c++) {
-								if (sudoku[groupRows[j]][c]==0 && sudokuflags[groupRows[j]][c][k]) {
-									if (!candidatesCol.contains(c)) {
-										candidatesCol.add(c);
+					for (int i=0;i<countKPut+1-groupSize;i++) {
+						int groupRows[] = new int[groupSize];
+						groupRows[0] = valueMissingRows.get(i);
+						int nbCandidatesPos = 0;
+						for (int c=0;c<nbnumbers;c++) {
+							if (sudoku[groupRows[0]][c][l] == 0 && sudokuflags[groupRows[0]][c][l][k]) {
+								nbCandidatesPos++;
+							}
+						}
+						groupRows = searchSwordFishGroupRowsRecursive(sudoku, l, k, sudokuflags, valueMissingRows, groupSize,
+								i+1, groupRows, 1, nbCandidatesPos);
+						if (groupRows != null) {
+							//found
+							ArrayList<Integer> candidatesCol = new ArrayList<Integer>();
+							for (int j=0;j<groupSize;j++) {
+								for (int c=0;c<nbnumbers;c++) {
+									if (sudoku[groupRows[j]][c][l]==0 && sudokuflags[groupRows[j]][c][l][k]) {
+										if (!candidatesCol.contains(c)) {
+											candidatesCol.add(c);
+										}
+									}
+								}
+							}
+							for (int j=0;j<candidatesCol.size();j++) {
+								int c = candidatesCol.get(j);
+								for (int ro=0;ro<nbnumbers;ro++) {
+									boolean notInGroup = true;
+									for (int g=0;g<groupSize;g++) {
+										if (groupRows[g] == ro) {
+											notInGroup = false;
+										}
+									}
+									if (sudoku[ro][c][l]==0 && notInGroup && sudokuflags[ro][c][l][k]) {
+										sudokuflags[ro][c][l][k] = false;
+										hasSimplyfied = true;
 									}
 								}
 							}
 						}
-						for (int j=0;j<candidatesCol.size();j++) {
-							int c = candidatesCol.get(j);
-							for (int ro=0;ro<nbnumbers;ro++) {
-								boolean notInGroup = true;
-								for (int g=0;g<groupSize;g++) {
-									if (groupRows[g] == ro) {
-										notInGroup = false;
+					}
+					//col
+					ArrayList<Integer> valueMissingCols = new ArrayList<Integer>();
+					for (int col=0;col<nbnumbers;col++) {
+						if (numberMissingCol[col][l][k]) {
+							valueMissingCols.add(col);
+						}
+					}
+					for (int i=0;i<countKPut+1-groupSize;i++) {
+						int groupCols[] = new int[groupSize];
+						groupCols[0] = valueMissingCols.get(i);
+						int nbCandidatesPos = 0;
+						for (int ro=0;ro<nbnumbers;ro++) {
+							if (sudoku[ro][groupCols[0]][l] == 0 && sudokuflags[ro][groupCols[0]][l][k]) {
+								nbCandidatesPos++;
+							}
+						}
+						groupCols = searchSwordFishGroupColsRecursive(sudoku, l, k, sudokuflags, valueMissingCols, groupSize,
+								i+1, groupCols, 1, nbCandidatesPos);
+						if (groupCols != null) {
+							//found
+							ArrayList<Integer> candidatesRow = new ArrayList<Integer>();
+							for (int j=0;j<groupSize;j++) {
+								for (int ro=0;ro<nbnumbers;ro++) {
+									if (sudoku[ro][groupCols[j]][l]==0 && sudokuflags[ro][groupCols[j]][l][k]) {
+										if (!candidatesRow.contains(ro)) {
+											candidatesRow.add(ro);
+										}
 									}
 								}
-								if (sudoku[ro][c]==0 && notInGroup && sudokuflags[ro][c][k]) {
-									sudokuflags[ro][c][k] = false;
-									hasSimplyfied = true;
+							}
+							for (int j=0;j<candidatesRow.size();j++) {
+								int ro = candidatesRow.get(j);
+								for (int c=0;c<nbnumbers;c++) {
+									boolean notInGroup = true;
+									for (int g=0;g<groupSize;g++) {
+										if (groupCols[g] == c) {
+											notInGroup = false;
+										}
+									}
+									if (sudoku[ro][c][l]==0 && notInGroup && sudokuflags[ro][c][l][k]) {
+										sudokuflags[ro][c][l][k] = false;
+										hasSimplyfied = true;
+									}
 								}
 							}
 						}
 					}
 				}
-				//col
-				ArrayList<Integer> valueMissingCols = new ArrayList<Integer>();
-				for (int col=0;col<nbnumbers;col++) {
-					if (numberMissingCol[col][k]) {
-						valueMissingCols.add(col);
-					}
-				}
-				for (int i=0;i<countKPut+1-groupSize;i++) {
-					int groupCols[] = new int[groupSize];
-					groupCols[0] = valueMissingCols.get(i);
-					int nbCandidatesPos = 0;
-					for (int ro=0;ro<nbnumbers;ro++) {
-						if (sudoku[ro][groupCols[0]] == 0 && sudokuflags[ro][groupCols[0]][k]) {
-							nbCandidatesPos++;
-						}
-					}
-					groupCols = searchSwordFishGroupColsRecursive(sudoku, k, sudokuflags, valueMissingCols, groupSize,
-							i+1, groupCols, 1, nbCandidatesPos);
-					if (groupCols != null) {
-						//found
-						ArrayList<Integer> candidatesRow = new ArrayList<Integer>();
-						for (int j=0;j<groupSize;j++) {
-							for (int ro=0;ro<nbnumbers;ro++) {
-								if (sudoku[ro][groupCols[j]]==0 && sudokuflags[ro][groupCols[j]][k]) {
-									if (!candidatesRow.contains(ro)) {
-										candidatesRow.add(ro);
-									}
-								}
-							}
-						}
-						for (int j=0;j<candidatesRow.size();j++) {
-							int ro = candidatesRow.get(j);
-							for (int c=0;c<nbnumbers;c++) {
-								boolean notInGroup = true;
-								for (int g=0;g<groupSize;g++) {
-									if (groupCols[g] == c) {
-										notInGroup = false;
-									}
-								}
-								if (sudoku[ro][c]==0 && notInGroup && sudokuflags[ro][c][k]) {
-									sudokuflags[ro][c][k] = false;
-									hasSimplyfied = true;
-								}
-							}
-						}
-					}
-				}
-				
 			}
 		}
 		return hasSimplyfied;
 	}
 	
-	int[] searchSwordFishGroupRowsRecursive(Integer sudoku[][],int missingValue, boolean sudokuflags[][][], ArrayList<Integer> valueMissingRows, int groupSize,
+	int[] searchSwordFishGroupRowsRecursive(Integer sudoku[][][], int l, int missingValue, boolean sudokuflags[][][][], ArrayList<Integer> valueMissingRows, int groupSize,
 			int index, int partialGroup[], int step, int nbCandidatesPos) {
 		if (nbCandidatesPos > groupSize) {
 			return null;
@@ -1459,7 +1475,7 @@ public class Puzzle {
 			ArrayList<Integer> candidatesGroup = new ArrayList<Integer>();
 			for (int j=0;j<=step;j++) {
 				for (int c=0;c<nbnumbers;c++) {
-					if (sudoku[partialGroup[j]][c]==0 && sudokuflags[partialGroup[j]][c][missingValue]) {
+					if (sudoku[partialGroup[j]][c][l]==0 && sudokuflags[partialGroup[j]][c][l][missingValue]) {
 						if (!candidatesGroup.contains(c)) {
 							candidatesGroup.add(c);
 							nbCandidatesPos++;
@@ -1467,7 +1483,7 @@ public class Puzzle {
 					}
 				}
 			}
-			int group[] = searchSwordFishGroupRowsRecursive(sudoku, missingValue, sudokuflags, valueMissingRows, groupSize,
+			int group[] = searchSwordFishGroupRowsRecursive(sudoku, l, missingValue, sudokuflags, valueMissingRows, groupSize,
 					i+1, partialGroup, step+1, nbCandidatesPos);
 			if (group != null) {
 				return group;
@@ -1476,7 +1492,7 @@ public class Puzzle {
 		return null;
 	}
 	
-	int[] searchSwordFishGroupColsRecursive(Integer sudoku[][],int missingValue, boolean sudokuflags[][][], ArrayList<Integer> valueMissingCols, int groupSize,
+	int[] searchSwordFishGroupColsRecursive(Integer sudoku[][][], int l,int missingValue, boolean sudokuflags[][][][], ArrayList<Integer> valueMissingCols, int groupSize,
 			int index, int partialGroup[], int step, int nbCandidatesPos) {
 		if (nbCandidatesPos > groupSize) {
 			return null;
@@ -1490,7 +1506,7 @@ public class Puzzle {
 			ArrayList<Integer> candidatesGroup = new ArrayList<Integer>();
 			for (int j=0;j<=step;j++) {
 				for (int ro=0;ro<nbnumbers;ro++) {
-					if (sudoku[ro][partialGroup[j]]==0 && sudokuflags[ro][partialGroup[j]][missingValue]) {
+					if (sudoku[ro][partialGroup[j]][l]==0 && sudokuflags[ro][partialGroup[j]][l][missingValue]) {
 						if (!candidatesGroup.contains(ro)) {
 							candidatesGroup.add(ro);
 							nbCandidatesPos++;
@@ -1498,7 +1514,7 @@ public class Puzzle {
 					}
 				}
 			}
-			int group[] = searchSwordFishGroupColsRecursive(sudoku, missingValue, sudokuflags, valueMissingCols, groupSize,
+			int group[] = searchSwordFishGroupColsRecursive(sudoku, l, missingValue, sudokuflags, valueMissingCols, groupSize,
 					i+1, partialGroup, step+1, nbCandidatesPos);
 			if (group != null) {
 				return group;

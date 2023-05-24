@@ -332,8 +332,14 @@ public class Puzzle {
 				level = Math.max(levelMethod, lvlmax);
 				if (level > chosenLevel) return 2;
 				boolean visibleGroups = simplifyByVisibleGroups(sudoku, sudokuflags, groupSize);
-				if (visibleGroups) {
-					deductionCross = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+				while (visibleGroups) {
+					visibleGroups = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+					for (int g=2;g<level/2;g++) {
+						visibleGroups = visibleGroups || simplifyByVisibleGroups(sudoku, sudokuflags, g);
+						visibleGroups = visibleGroups || simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, g);
+					}
+					
+					visibleGroups = visibleGroups || simplifyByVisibleGroups(sudoku, sudokuflags, groupSize);
 					singleSoluce = searchCellUniqueSolution(sudoku, sudokuflags);
 					if (singleSoluce != null && singleSoluce[2] == -1) {
 						return 0;
@@ -367,8 +373,12 @@ public class Puzzle {
 				if (level > chosenLevel) return 2;
 				//nakedGroup
 				boolean nakedGroup = simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize);
-				if (nakedGroup) {
-					deductionCross = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+				while (nakedGroup) {
+					nakedGroup = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+					for (int g=2;g<=level/2;g++) {
+						nakedGroup = nakedGroup || simplifyByVisibleGroups(sudoku, sudokuflags, g);
+						nakedGroup = nakedGroup || simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, g);
+					}
 					singleSoluce = searchCellUniqueSolution(sudoku, sudokuflags);
 					if (singleSoluce != null && singleSoluce[2] == -1) {
 						return 0;
@@ -405,57 +415,62 @@ public class Puzzle {
 				if (level > chosenLevel) return 2;
 				//swordfishes
 				boolean swordfish = simplifyBySwordFishes(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize);
-				if (swordfish) {
-					deductionCross = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+				while (swordfish) {
+					swordfish = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
 					for (int groupSize2=2;groupSize2<=n;groupSize2++) {
-						simplifyByVisibleGroups(sudoku, sudokuflags, groupSize2);
-						simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize2);
-						singleSoluce = searchCellUniqueSolution(sudoku, sudokuflags);
-						if (singleSoluce != null && singleSoluce[2] == -1) {
-							return 0;
+						swordfish = swordfish || simplifyByVisibleGroups(sudoku, sudokuflags, groupSize2);
+						swordfish = swordfish || simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize2);
+					}
+					for (int groupSize2=2;groupSize2<=groupSize;groupSize2++) {
+						swordfish = swordfish || simplifyBySwordFishes(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize);
+					}
+					singleSoluce = searchCellUniqueSolution(sudoku, sudokuflags);
+					if (singleSoluce != null && singleSoluce[2] == -1) {
+						return 0;
+					}
+					if (singleSoluce != null && singleSoluce[2] != -1) {
+						if (showsteps) {
+							System.out.println("unique candidate for r"+singleSoluce[0]+" c"+singleSoluce[1] + " k" + singleSoluce[2]);
 						}
-						if (singleSoluce != null && singleSoluce[2] != -1) {
-							if (showsteps) {
-								System.out.println("unique candidate for r"+singleSoluce[0]+" c"+singleSoluce[1] + " k" + singleSoluce[2]);
-							}
-							sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
-							int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
-							sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
-							return solve;
+						sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
+						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
+						sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
+						return solve;
+					}
+					singleSoluce = searchUniquePosSolution(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+					if (singleSoluce != null && singleSoluce[2] == -1) {
+						return 0;
+					}
+					if (singleSoluce != null && singleSoluce[2] != -1) {
+						if (showsteps) {
+							System.out.println("unique position for k"+singleSoluce[2]+" r"+singleSoluce[0] + " c" + singleSoluce[1]);
 						}
-						singleSoluce = searchUniquePosSolution(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
-						if (singleSoluce != null && singleSoluce[2] == -1) {
-							return 0;
-						}
-						if (singleSoluce != null && singleSoluce[2] != -1) {
-							if (showsteps) {
-								System.out.println("unique position for k"+singleSoluce[2]+" r"+singleSoluce[0] + " c" + singleSoluce[1]);
-							}
-							sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
-							int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
-							sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
-							return solve;
-						}
+						sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
+						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
+						sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
+						return solve;
 					}
 				}
 			}
 			
 			//deductionCrossX?
-			for (int groupSize=2;groupSize<= Math.max(nbrowsperblock,nbcolsperblock)/2;groupSize++) {
+			int n2 = Math.max(nbrowsperblock,nbcolsperblock)/2;
+			for (int groupSize=2;groupSize<= n2;groupSize++) {
 				levelMethod++;
 				lvlmax = Math.max(levelMethod, lvlmax);
 				level = Math.max(levelMethod, lvlmax);
 				if (level > chosenLevel) return 2;
 				boolean deductionCrossX = simplifyByDeductionCrossX(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize);
-				if (deductionCrossX) {
+				while (deductionCrossX) {
+					deductionCrossX = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
 					for (int groupSize2=2;groupSize2<=n;groupSize2++) {
-						simplifyByVisibleGroups(sudoku, sudokuflags, groupSize2);
-						simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize2);
+						deductionCrossX = deductionCrossX || simplifyByVisibleGroups(sudoku, sudokuflags, groupSize2);
+						deductionCrossX = deductionCrossX || simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize2);
+						deductionCrossX = deductionCrossX || simplifyBySwordFishes(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize2);
 					}
-					for (int groupSize2=2;groupSize2<=n;groupSize2++) {
-						simplifyBySwordFishes(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize2);
+					for (int groupSize2=2;groupSize2<=groupSize;groupSize2++) {
+						deductionCrossX = deductionCrossX || simplifyBySwordFishes(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize2);
 					}
-					deductionCross = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
 					singleSoluce = searchCellUniqueSolution(sudoku, sudokuflags);
 					if (singleSoluce != null && singleSoluce[2] == -1) {
 						return 0;

@@ -4,9 +4,9 @@ public class GeneratorMain {
 	public static int nbnumbers = 9;
 	public static int nbrowsperblock = 3;
 	public static int nbcolsperblock = 3;
-	public static long seed = 2;
+	public static long seed = 3;
 	public static int nbessais = 1;
-	public static int chosenLevel = 1;
+	public static int chosenLevel = 2;
 	public static int chosenNbSteps = 200;
 
 	public static void main(String[] args) {
