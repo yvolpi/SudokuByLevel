@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inscryption Generator</title>
+    <link rel="stylesheet" href="sudoku2dgenerator.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Sudoku 2d generator</h1>
+    </header>
+    <p>
+      A sudoku is a grid with the same number of rows, columns and blocks.</br>
+      The player must fill it with the folow rules: a number must appear exactly once per row, column and block.
+    </p>
+    <p>
+      Amount of numbers.
+      <input
+        type="number"
+        id="amountNumber"
+        min="1"
+        value="9"
+        class="textbox"
+      />
+    </p>
+    <p>
+      Choose the dimensions of each block. The product of the dimensions (rows x columns per block) must be equal to the amount of numbers.
+    </p>
+    <p>Number of rows per block.
+      <input
+        type="number"
+        id="nbrowsperblock"
+        min="1"
+        value="3"
+        class="textbox"
+      />
+    </p>
+    <p>Number of columns per block.
+      <input
+        type="number"
+        id="nbcolsperblock"
+        min="1"
+        value="3"
+        class="textbox"
+      />
+    </p>
+    <p>
+      Fill the other parameters.
+    </p>
+    <p>Seed.
+      <input
+        type="number"
+        id="seed"
+        min="0"
+        value="0"
+        class="textbox"
+      />
+    </p>
+    <p>Level limit (the level will be as close as possible of the level limit (lower)).
+      <input
+        type="number"
+        id="levellimit"
+        min="1"
+        value="1"
+        class="textbox"
+      />
+    </p>
+    <p>Number of tries (higher chances to get the level limit).
+      <input
+        type="number"
+        id="nbtries"
+        min="1"
+        value="1"
+        class="textbox"
+      />
+    </p>
+    <button id="generate">Generate grid</button>
+    <div id="grid">
+    </div>
+    <script src="../model/Board.js"></script>
+    <script src="../model/Puzzle.js"></script>
+    <script src="sudoku2dgenerator.js"></script>
+  </body>
+</html>

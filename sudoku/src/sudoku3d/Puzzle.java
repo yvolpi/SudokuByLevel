@@ -794,7 +794,7 @@ public class Puzzle {
 		boolean hasSimplyfied = false;
 		//row
 		for (int ro=0;ro<nbnumbers;ro++) {
-			for (int l=0;l<nbnumbers;l++) {
+			for (int l=0;l<d3size;l++) {
 				ArrayList<Integer> positionsEmptyCells = new ArrayList<Integer>();
 				for (int c=0;c<nbnumbers;c++) {
 					if (sudoku[ro][c][l] == 0) {
@@ -851,7 +851,7 @@ public class Puzzle {
 		}
 		//col
 		for (int c=0;c<nbnumbers;c++) {
-			for (int l=0;l<nbnumbers;l++) {
+			for (int l=0;l<d3size;l++) {
 				ArrayList<Integer> positionsEmptyCells = new ArrayList<Integer>();
 				for (int ro=0;ro<nbnumbers;ro++) {
 					if (sudoku[ro][c][l] == 0) {
@@ -909,7 +909,7 @@ public class Puzzle {
 		
 		//block
 		for (int b=0;b<nbnumbers;b++) {
-			for (int l=0;l<nbnumbers;l++) {
+			for (int l=0;l<d3size;l++) {
 				ArrayList<Integer> positionsEmptyCells = new ArrayList<Integer>();
 				int rowblock = (b/nbrowsperblock)*nbrowsperblock;
 				int colblock = (b%nbrowsperblock)*nbcolsperblock;
