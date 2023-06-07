@@ -14,11 +14,12 @@ generate_input.onclick = () => {
     const nbcolsperblock = document.getElementById("nbcolsperblock").value;
     const levellimit = document.getElementById("levellimit").value;
     const numseed = document.getElementById("seed").value;
+    const nbtries = document.getElementById("nbtries").value;
     board = new Board(nbnumbers,nbrowsperblock,nbcolsperblock,numseed,levellimit);
     puzzle = new Puzzle(board);
-    puzzle.findBestPuzzle(levellimit, 0, 1);
+    puzzle.findBestPuzzle(levellimit, 0, nbtries);
     console.log(puzzle.puzzleTab);
-    let htmlGrid = "";
+    let htmlGrid = '<h>level ' + puzzle.level + '</h>';
     for (let i=0; i<board.nbnumbers; i++) {
         let row = '';
         if (i==0) {

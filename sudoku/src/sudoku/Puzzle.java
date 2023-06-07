@@ -906,7 +906,7 @@ public class Puzzle {
 			ArrayList<Integer> positionsEmptyCells = new ArrayList<Integer>();
 			for (int ro=0;ro<nbnumbers;ro++) {
 				if (sudoku[ro][c] == 0) {
-					positionsEmptyCells.add(c);
+					positionsEmptyCells.add(ro);
 				}
 			}
 			if (positionsEmptyCells.size() >= 2*groupSize) {

@@ -17,6 +17,7 @@
 
 .row {
     display: inline-flex;
+    width:fit-content;
 }
 
 .cell {
@@ -55,4 +56,10 @@
 
 .digit {
     width: 58px;
+}
+
+h {
+    margin-left: 50px;
+    font-size: 3rem;
+    font-family: 'Times New Roman', Times, serif;
 }

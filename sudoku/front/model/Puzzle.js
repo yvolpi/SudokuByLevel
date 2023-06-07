@@ -300,32 +300,26 @@ class Puzzle {
 			if (this.level > chosenLevel) return 2;
 			
 			//deduction cross?
-			/*boolean deductionCross = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
-			int singleSoluce[] = null;
+			let deductionCross = this.simplifyByDeductionCross(sudoku);
+			let singleSoluce = null;
 			if (deductionCross) {
-				singleSoluce = searchCellUniqueSolution(sudoku, sudokuflags);
+				singleSoluce = this.searchCellUniqueSolution(sudoku);
 				if (singleSoluce != null && singleSoluce[2] == -1) {
 					return 0;
 				}
 				if (singleSoluce != null && singleSoluce[2] != -1) {
-					if (showsteps) {
-						System.out.println("unique candidate for r"+singleSoluce[0]+" c"+singleSoluce[1] + " k" + singleSoluce[2]);
-					}
 					sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
-					int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
+					let solve = this.solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 					sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
 					return solve;
 				}
-				singleSoluce = searchUniquePosSolution(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+				singleSoluce = this.searchUniquePosSolution(sudoku);
 				if (singleSoluce != null && singleSoluce[2] == -1) {
 					return 0;
 				}
 				if (singleSoluce != null && singleSoluce[2] != -1) {
-					if (showsteps) {
-						System.out.println("unique position for k"+singleSoluce[2]+" r"+singleSoluce[0] + " c" + singleSoluce[1]);
-					}
 					sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
-					int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
+					let solve = this.solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 					sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
 					return solve;
 				}
@@ -333,91 +327,79 @@ class Puzzle {
 			
 			
 			//pairs, triplets?
-			int n = (nbnumbers/2)-1;
-			int levelMethod = 3;
-			for (int groupSize=2;groupSize<=n;groupSize++) {
+			const n = (this.nbnumbers/2)-1;
+			let levelMethod = 3;
+			for (let groupSize=2;groupSize<=n;groupSize++) {
 				levelMethod++;
 				lvlmax = Math.max(levelMethod, lvlmax);
-				level = Math.max(levelMethod, lvlmax);
-				if (level > chosenLevel) return 2;
-				boolean visibleGroups = simplifyByVisibleGroups(sudoku, sudokuflags, groupSize);
+				this.level = Math.max(levelMethod, lvlmax);
+				if (this.level > chosenLevel) return 2;
+				let visibleGroups = this.simplifyByVisibleGroups(sudoku, groupSize);
 				while (visibleGroups) {
-					visibleGroups = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
-					for (int g=2;g<level/2;g++) {
-						visibleGroups = visibleGroups || simplifyByVisibleGroups(sudoku, sudokuflags, g);
-						visibleGroups = visibleGroups || simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, g);
+					visibleGroups = this.simplifyByDeductionCross(sudoku);
+					for (let g=2;g<this.level/2;g++) {
+						visibleGroups = visibleGroups || this.simplifyByVisibleGroups(sudoku, g);
+						visibleGroups = visibleGroups || this.simplifyByNakedGroups(sudoku, g);
 					}
 					
-					visibleGroups = visibleGroups || simplifyByVisibleGroups(sudoku, sudokuflags, groupSize);
-					singleSoluce = searchCellUniqueSolution(sudoku, sudokuflags);
+					visibleGroups = visibleGroups || this.simplifyByVisibleGroups(sudoku, groupSize);
+					singleSoluce = this.searchCellUniqueSolution(sudoku);
 					if (singleSoluce != null && singleSoluce[2] == -1) {
 						return 0;
 					}
 					if (singleSoluce != null && singleSoluce[2] != -1) {
-						if (showsteps) {
-							System.out.println("unique candidate for r"+singleSoluce[0]+" c"+singleSoluce[1] + " k" + singleSoluce[2]);
-						}
 						sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
-						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
+						let solve = this.solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 						sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
 						return solve;
 					}
-					singleSoluce = searchUniquePosSolution(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+					singleSoluce = this.searchUniquePosSolution(sudoku);
 					if (singleSoluce != null && singleSoluce[2] == -1) {
 						return 0;
 					}
 					if (singleSoluce != null && singleSoluce[2] != -1) {
-						if (showsteps) {
-							System.out.println("unique position for k"+singleSoluce[2]+" r"+singleSoluce[0] + " c" + singleSoluce[1]);
-						}
 						sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
-						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
+						let solve = this.solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 						sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
 						return solve;
 					}
 				}
 				levelMethod++;
 				lvlmax = Math.max(levelMethod, lvlmax);
-				level = Math.max(levelMethod, lvlmax);
-				if (level > chosenLevel) return 2;
+				this.level = Math.max(levelMethod, lvlmax);
+				if (this.level > chosenLevel) return 2;
 				//nakedGroup
-				boolean nakedGroup = simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, groupSize);
+				let nakedGroup = this.simplifyByNakedGroups(sudoku, groupSize);
 				while (nakedGroup) {
-					nakedGroup = simplifyByDeductionCross(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
-					for (int g=2;g<=level/2;g++) {
-						nakedGroup = nakedGroup || simplifyByVisibleGroups(sudoku, sudokuflags, g);
-						nakedGroup = nakedGroup || simplifyByNakedGroups(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock, g);
+					nakedGroup = this.simplifyByDeductionCross(sudoku);
+					for (let g=2;g<=this.level/2;g++) {
+						nakedGroup = nakedGroup || this.simplifyByVisibleGroups(sudoku, g);
+						nakedGroup = nakedGroup || this.simplifyByNakedGroups(sudoku, g);
 					}
-					singleSoluce = searchCellUniqueSolution(sudoku, sudokuflags);
+					singleSoluce = this.searchCellUniqueSolution(sudoku);
 					if (singleSoluce != null && singleSoluce[2] == -1) {
 						return 0;
 					}
 					if (singleSoluce != null && singleSoluce[2] != -1) {
-						if (showsteps) {
-							System.out.println("unique candidate for r"+singleSoluce[0]+" c"+singleSoluce[1] + " k" + singleSoluce[2]);
-						}
 						sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
-						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
+						let solve = this.solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 						sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
 						return solve;
 					}
-					singleSoluce = searchUniquePosSolution(sudoku, sudokuflags, numberMissingRow, numberMissingCol, numberMissingBlock);
+					singleSoluce = this.searchUniquePosSolution(sudoku);
 					if (singleSoluce != null && singleSoluce[2] == -1) {
 						return 0;
 					}
 					if (singleSoluce != null && singleSoluce[2] != -1) {
-						if (showsteps) {
-							System.out.println("unique position for k"+singleSoluce[2]+" r"+singleSoluce[0] + " c" + singleSoluce[1]);
-						}
 						sudoku[singleSoluce[0]][singleSoluce[1]] = singleSoluce[2];
-						int solve = solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
+						let solve = this.solver(sudoku, nbEmptyCells-1, lvlmax, nbTests, chosenLevel);
 						sudoku[singleSoluce[0]][singleSoluce[1]] = 0;
 						return solve;
 					}
 				}
 			}
 			
-			for (int groupSize=2;groupSize<=n;groupSize++) {
+			/*for (int groupSize=2;groupSize<=n;groupSize++) {
 				levelMethod++;
 				lvlmax = Math.max(levelMethod, lvlmax);
 				level = Math.max(levelMethod, lvlmax);
@@ -564,25 +546,25 @@ class Puzzle {
 		}
 		return candidates;
 	}
-	/*
-	int[] searchCellUniqueSolution(Integer sudoku[][], boolean sudokuflags[][][]) {
+	
+	searchCellUniqueSolution(sudoku) {
 		//return tab of 3 numbers: row, colonne and number
-		for (int i=0;i<nbnumbers;i++) {
-			for (int j=0;j<nbnumbers;j++) {
+		for (let i=0;i<this.nbnumbers;i++) {
+			for (let j=0;j<this.nbnumbers;j++) {
 				if (sudoku[i][j] == 0) {
-					int count = 0;
-					int candidate = 0;
-					for (int k=0;k<nbnumbers;k++) {
-						if (sudokuflags[i][j][k]) {
+					let count = 0;
+					let candidate = 0;
+					for (let k=0;k<this.nbnumbers;k++) {
+						if (this.sudokuflags[i][j][k]) {
 							count++;
 							candidate = k+1;
 						}
 					}
 					if (count == 0) {
-						return new int[] {0,0,-1};
+						return [0,0,-1];
 					}
 					if (count == 1) {
-						return new int[] {i,j,candidate};
+						return [i,j,candidate];
 					}
 				}
 			}
@@ -590,7 +572,7 @@ class Puzzle {
 		return null;
 	}
 	
-	int[] searchCellXSolutions(Integer sudoku[][], boolean sudokuflags[][][], int nbsolutions) {
+	/*int[] searchCellXSolutions(Integer sudoku[][], boolean sudokuflags[][][], int nbsolutions) {
 		//return tab of x numbers: row, colonne and numbers
 		for (int i=0;i<nbnumbers;i++) {
 			for (int j=0;j<nbnumbers;j++) {
@@ -619,75 +601,75 @@ class Puzzle {
 			}
 		}
 		return null;
-	}
+	}*/
 	
-	int[] searchUniquePosSolution(Integer sudoku[][], boolean sudokuflags[][][], boolean numberMissingRow[][], boolean numberMissingCol[][], boolean numberMissingBlock[][]) {
+	searchUniquePosSolution(sudoku) {
 		//return tab of 3 numbers: row, colonne and number
 		//row
-		for (int ro=0;ro<nbnumbers;ro++) {
-			for (int k=0;k<nbnumbers;k++) {
-				if (numberMissingRow[ro][k]) {
-					int count = 0;
-					int pos = -1;
-					for (int c=0;c<nbnumbers;c++) {
-						if (sudoku[ro][c] == 0 && sudokuflags[ro][c][k]) {
+		for (let ro=0;ro<this.nbnumbers;ro++) {
+			for (let k=0;k<this.nbnumbers;k++) {
+				if (this.numberMissingRow[ro][k]) {
+					let count = 0;
+					let pos = -1;
+					for (let c=0;c<this.nbnumbers;c++) {
+						if (sudoku[ro][c] == 0 && this.sudokuflags[ro][c][k]) {
 							count++;
 							pos = c;
 						}
 					}
 					if (count == 0) {
-						return new int[] {0,0,-1};
+						return [0,0,-1];
 					}
 					if (count == 1) {
-						return new int[] {ro,pos,k+1};
+						return [ro,pos,k+1];
 					}
 				}
 			}
 		}
 		//col
-		for (int c=0;c<nbnumbers;c++) {
-			for (int k=0;k<nbnumbers;k++) {
-				if (numberMissingCol[c][k]) {
-					int count = 0;
-					int pos = -1;
-					for (int ro=0;ro<nbnumbers;ro++) {
-						if (sudoku[ro][c] == 0 && sudokuflags[ro][c][k]) {
+		for (let c=0;c<this.nbnumbers;c++) {
+			for (let k=0;k<this.nbnumbers;k++) {
+				if (this.numberMissingCol[c][k]) {
+					let count = 0;
+					let pos = -1;
+					for (let ro=0;ro<this.nbnumbers;ro++) {
+						if (sudoku[ro][c] == 0 && this.sudokuflags[ro][c][k]) {
 							count++;
 							pos = ro;
 						}
 					}
 					if (count == 0) {
-						return new int[] {0,0,-1};
+						return [0,0,-1];
 					}
 					if (count == 1) {
-						return new int[] {pos,c,k+1};
+						return [pos,c,k+1];
 					}
 				}
 			}
 		}
 		//block
-		for (int b=0;b<nbnumbers;b++) {
-			int rowBlock = (b/nbrowsperblock)*nbrowsperblock;
-			int colBlock = (b%nbrowsperblock)*nbcolsperblock;
-			for (int k=0;k<nbnumbers;k++) {
-				if (numberMissingBlock[b][k]) {
-					int count = 0;
-					int posRow = -1;
-					int posCol = -1;
-					for (int posb=0;posb<nbnumbers;posb++) {
-						int ro = rowBlock + posb/nbcolsperblock;
-						int c = colBlock + posb%nbcolsperblock;
-						if (sudoku[ro][c] == 0 && sudokuflags[ro][c][k]) {
+		for (let b=0;b<this.nbnumbers;b++) {
+			let rowBlock =  Math.floor(b/this.nbrowsperblock)*this.nbrowsperblock;
+			let colBlock = (b%this.nbrowsperblock)*this.nbcolsperblock;
+			for (let k=0;k<this.nbnumbers;k++) {
+				if (this.numberMissingBlock[b][k]) {
+					let count = 0;
+					let posRow = -1;
+					let posCol = -1;
+					for (let posb=0;posb<this.nbnumbers;posb++) {
+						let ro = rowBlock + Math.floor(posb/this.nbcolsperblock);
+						let c = colBlock + posb%this.nbcolsperblock;
+						if (sudoku[ro][c] == 0 && this.sudokuflags[ro][c][k]) {
 							count++;
 							posRow = ro;
 							posCol = c;
 						}
 					}
 					if (count == 0) {
-						return new int[] {0,0,-1};
+						return [0,0,-1];
 					}
 					if (count == 1) {
-						return new int[] {posRow,posCol,k+1};
+						return [posRow,posCol,k+1];
 					}
 				}
 			}
@@ -695,21 +677,21 @@ class Puzzle {
 		return null;
 	}
 	
-	boolean simplifyByDeductionCross(Integer sudoku[][], boolean sudokuflags[][][], boolean numberMissingRow[][], boolean numberMissingCol[][], boolean numberMissingBlock[][]) {
-		boolean hasChanged = true;
-		boolean hasSimplyfied = false;
+	simplifyByDeductionCross(sudoku) {
+		let hasChanged = true;
+		let hasSimplyfied = false;
 		while (hasChanged) {
 			hasChanged = false;
 			//row
-			for(int i=0;i<nbnumbers;i++) {
-				for(int k=0;k<nbnumbers;k++) {
-					if (numberMissingRow[i][k]) {
-						int posBloc = -1;
-						int count = 0;
-						for(int c=0;c<nbnumbers;c++) {
-							if (sudoku[i][c] == 0 && sudokuflags[i][c][k]) {
-								if (posBloc == -1 || posBloc!= c/nbcolsperblock) {
-									posBloc = c/nbcolsperblock;
+			for(let i=0;i<this.nbnumbers;i++) {
+				for(let k=0;k<this.nbnumbers;k++) {
+					if (this.numberMissingRow[i][k]) {
+						let posBloc = -1;
+						let count = 0;
+						for(let c=0;c<this.nbnumbers;c++) {
+							if (sudoku[i][c] == 0 && this.sudokuflags[i][c][k]) {
+								if (posBloc == -1 || posBloc!= c/this.nbcolsperblock) {
+									posBloc = c/this.nbcolsperblock;
 									count ++;
 								}
 								
@@ -717,18 +699,14 @@ class Puzzle {
 						}
 						if (count == 1) {
 							//unique block for the number k+1
-							int rowBlock = i%nbrowsperblock;
-							int rowBlockLocation = (i/nbrowsperblock)*nbrowsperblock;
-							int colBlockLocation = posBloc*nbcolsperblock;
-							for(int r=0;r<nbrowsperblock;r++) {
+							let rowBlock = i%this.nbrowsperblock;
+							let rowBlockLocation = Math.floor(i/this.nbrowsperblock)*this.nbrowsperblock;
+							let colBlockLocation = posBloc*this.nbcolsperblock;
+							for(let r=0;r<this.nbrowsperblock;r++) {
 								if (r != rowBlock) {
-									for(int c=0;c<nbcolsperblock;c++) {
-										if (sudoku[rowBlockLocation + r][colBlockLocation + c] == 0 && sudokuflags[rowBlockLocation + r][colBlockLocation + c][k]) {
-											if (showsteps) {
-												System.out.println("deduction cross rowblock row" + i + ", b" + colBlockLocation + " for k" + (k+1));
-												System.out.println("Remove candidate k" + (k+1) + " for r" + (rowBlockLocation + r) + " c" + (colBlockLocation + c));
-											}
-											sudokuflags[rowBlockLocation + r][colBlockLocation + c][k] = false;
+									for(let c=0;c<this.nbcolsperblock;c++) {
+										if (sudoku[rowBlockLocation + r][colBlockLocation + c] == 0 && this.sudokuflags[rowBlockLocation + r][colBlockLocation + c][k]) {
+											this.sudokuflags[rowBlockLocation + r][colBlockLocation + c][k] = false;
 											hasChanged = true;
 											hasSimplyfied = true;
 										}
@@ -740,15 +718,15 @@ class Puzzle {
 				}
 			}
 			//col
-			for(int j=0;j<nbnumbers;j++) {
-				for(int k=0;k<nbnumbers;k++) {
-					if (numberMissingCol[j][k]) {
-						int posBloc = -1;
-						int count = 0;
-						for(int r=0;r<nbnumbers;r++) {
-							if (sudoku[r][j] == 0 && sudokuflags[r][j][k]) {
-								if (posBloc == -1 || posBloc!= r/nbrowsperblock) {
-									posBloc = r/nbrowsperblock;
+			for(let j=0;j<this.nbnumbers;j++) {
+				for(let k=0;k<this.nbnumbers;k++) {
+					if (this.numberMissingCol[j][k]) {
+						let posBloc = -1;
+						let count = 0;
+						for(let r=0;r<this.nbnumbers;r++) {
+							if (sudoku[r][j] == 0 && this.sudokuflags[r][j][k]) {
+								if (posBloc == -1 || posBloc !=  Math.floor(r/this.nbrowsperblock)) {
+									posBloc =  Math.floor(r/this.nbrowsperblock);
 									count ++;
 								}
 								
@@ -756,18 +734,14 @@ class Puzzle {
 						}
 						if (count == 1) {
 							//unique block for the number k+1
-							int colBlock = j%nbcolsperblock;
-							int rowBlockLocation = posBloc*nbrowsperblock;
-							int colBlockLocation = (j/nbcolsperblock)*nbcolsperblock;
-							for(int c=0;c<nbcolsperblock;c++) {
+							let colBlock = j%this.nbcolsperblock;
+							let rowBlockLocation = posBloc*this.nbrowsperblock;
+							let colBlockLocation =  Math.floor(j/this.nbcolsperblock)*this.nbcolsperblock;
+							for(let c=0;c<this.nbcolsperblock;c++) {
 								if (c != colBlock) {
-									for(int r=0;r<nbrowsperblock;r++) {
-										if (sudoku[rowBlockLocation + r][colBlockLocation + c] == 0 && sudokuflags[rowBlockLocation + r][colBlockLocation + c][k]) {
-											if (showsteps) {
-												System.out.println("deduction cross colblock col" + j + ", b" + rowBlockLocation + " for k" + (k+1));
-												System.out.println("Remove candidate k" + (k+1) + " for r" + (rowBlockLocation + r) + " c" + (colBlockLocation + c));
-											}
-											sudokuflags[rowBlockLocation + r][colBlockLocation + c][k] = false;
+									for(let r=0;r<this.nbrowsperblock;r++) {
+										if (sudoku[rowBlockLocation + r][colBlockLocation + c] == 0 && this.sudokuflags[rowBlockLocation + r][colBlockLocation + c][k]) {
+											this.sudokuflags[rowBlockLocation + r][colBlockLocation + c][k] = false;
 											hasChanged = true;
 											hasSimplyfied = true;
 										}
@@ -779,27 +753,27 @@ class Puzzle {
 				}
 			}
 			//block
-			for(int b=0;b<nbnumbers;b++) {
-				for(int k=0;k<nbnumbers;k++) {
-					if (numberMissingBlock[b][k]) {
-						int posBlocRow = -1;
-						int posBlocCol = -1;
-						int rowBlock = (b/nbrowsperblock)*nbrowsperblock;
-						int colBlock = (b%nbrowsperblock)*nbcolsperblock;
-						int countRow = 0;
-						int countCol = 0;
-						for(int posb=0;posb<nbnumbers;posb++) {
-							if (sudoku[rowBlock + posb/nbcolsperblock][colBlock + posb%nbcolsperblock] == 0 && sudokuflags[rowBlock + posb/nbcolsperblock][colBlock + posb%nbcolsperblock][k]) {
+			for(let b=0;b<this.nbnumbers;b++) {
+				for(let k=0;k<this.nbnumbers;k++) {
+					if (this.numberMissingBlock[b][k]) {
+						let posBlocRow = -1;
+						let posBlocCol = -1;
+						let rowBlock = Math.floor(b/this.nbrowsperblock)*this.nbrowsperblock;
+						let colBlock = (b%this.nbrowsperblock)*this.nbcolsperblock;
+						let countRow = 0;
+						let countCol = 0;
+						for(let posb=0;posb<this.nbnumbers;posb++) {
+							if (sudoku[rowBlock + Math.floor(posb/this.nbcolsperblock)][colBlock + posb%this.nbcolsperblock] == 0 && this.sudokuflags[rowBlock + Math.floor(posb/this.nbcolsperblock)][colBlock + posb%this.nbcolsperblock][k]) {
 								if (countRow == 0) {
 									countRow ++;
 									countCol++;
-									posBlocRow = rowBlock + posb/nbcolsperblock;
-									posBlocCol = colBlock + posb%nbcolsperblock;
+									posBlocRow = rowBlock + Math.floor(posb/this.nbcolsperblock);
+									posBlocCol = colBlock + posb%this.nbcolsperblock;
 								} else {
-									if (rowBlock + posb/nbcolsperblock != posBlocRow) {
+									if (rowBlock + Math.floor(posb/this.nbcolsperblock) != posBlocRow) {
 										countRow++;
 									}
-									if (colBlock + posb%nbcolsperblock != posBlocCol) {
+									if (colBlock + posb%this.nbcolsperblock != posBlocCol) {
 										countCol++;
 									}
 								}
@@ -808,14 +782,10 @@ class Puzzle {
 						}
 						if (countRow == 1) {
 							//unique row for the number k+1
-							for(int c=0;c<nbnumbers;c++) {
-								if (c < colBlock || c >= colBlock + nbcolsperblock) {
-									if (sudoku[posBlocRow][c] == 0 && sudokuflags[posBlocRow][c][k]) {
-										if (showsteps) {
-											System.out.println("deduction cross blockrow block" + b + ", row" + posBlocRow + " for k" + (k+1));
-											System.out.println("Remove candidate k" + (k+1) + " for r" + posBlocRow + " c" + c);
-										}
-										sudokuflags[posBlocRow][c][k] = false;
+							for(let c=0;c<this.nbnumbers;c++) {
+								if (c < colBlock || c >= colBlock + this.nbcolsperblock) {
+									if (sudoku[posBlocRow][c] == 0 && this.sudokuflags[posBlocRow][c][k]) {
+										this.sudokuflags[posBlocRow][c][k] = false;
 										hasChanged = true;
 										hasSimplyfied = true;
 									}
@@ -823,14 +793,10 @@ class Puzzle {
 							}
 						} else if (countCol == 1) {
 							//unique col for the number k+1
-							for(int ro=0;ro<nbnumbers;ro++) {
-								if (ro < rowBlock || ro >= rowBlock + nbrowsperblock) {
-									if (sudoku[ro][posBlocCol] == 0 && sudokuflags[ro][posBlocCol][k]) {
-										if (showsteps) {
-											System.out.println("deduction cross blockcol block" + b + ", col" + posBlocCol + " for k" + (k+1));
-											System.out.println("Remove candidate k" + (k+1) + " for r" + ro + " c" + posBlocCol);
-										}
-										sudokuflags[ro][posBlocCol][k] = false;
+							for(let ro=0;ro<this.nbnumbers;ro++) {
+								if (ro < rowBlock || ro >= rowBlock + this.nbrowsperblock) {
+									if (sudoku[ro][posBlocCol] == 0 && this.sudokuflags[ro][posBlocCol][k]) {
+										this.sudokuflags[ro][posBlocCol][k] = false;
 										hasChanged = true;
 										hasSimplyfied = true;
 									}
@@ -845,44 +811,44 @@ class Puzzle {
 		
 	}
 	
-	boolean simplifyByVisibleGroups(Integer sudoku[][], boolean sudokuflags[][][], int groupSize) {
+	simplifyByVisibleGroups(sudoku, groupSize) {
 		//visible pairs, triplets, ...
-		boolean hasSimplyfied = false;
+		let hasSimplyfied = false;
 		//row
-		for (int ro=0;ro<nbnumbers;ro++) {
-			ArrayList<Integer> positionsEmptyCells = new ArrayList<Integer>();
-			for (int c=0;c<nbnumbers;c++) {
+		for (let ro=0;ro<this.nbnumbers;ro++) {
+			let positionsEmptyCells = [];
+			for (let c=0;c<this.nbnumbers;c++) {
 				if (sudoku[ro][c] == 0) {
-					positionsEmptyCells.add(c);
+					positionsEmptyCells[positionsEmptyCells.length] = c;
 				}
 			}
-			if (positionsEmptyCells.size() >= 2*groupSize) {
-				for (int i=0;i<positionsEmptyCells.size()+1-groupSize;i++) {
-					int groupCells[] = new int[groupSize];
-					groupCells[0] = positionsEmptyCells.get(i);
-					int nbCandidates = 0;
-					for (int k=0;k<nbnumbers;k++) {
-						if (sudokuflags[ro][groupCells[0]][k]) {
+			if (positionsEmptyCells.length >= 2*groupSize) {
+				for (let i=0;i<positionsEmptyCells.length+1-groupSize;i++) {
+					let groupCells = [];
+					groupCells[0] = positionsEmptyCells[i];
+					let nbCandidates = 0;
+					for (let k=0;k<this.nbnumbers;k++) {
+						if (this.sudokuflags[ro][groupCells[0]][k]) {
 							nbCandidates++;
 						}
 					}
-					groupCells = searchVisibleGroupRowsRecursive(ro, sudokuflags, positionsEmptyCells, groupSize,
+					groupCells = this.searchVisibleGroupRowsRecursive(ro, positionsEmptyCells, groupSize,
 							i+1, groupCells, 1, nbCandidates);
 					if (groupCells != null) {
 						//group found
-						ArrayList<Integer> groupCandidates = new ArrayList<>();
-						for (int g=0;g<groupCells.length;g++) {
-							int col = groupCells[g];
-							for (int k=0;k<nbnumbers;k++) {
-								if (sudokuflags[ro][col][k] && !groupCandidates.contains(k)) {
-									groupCandidates.add(k);
+						let groupCandidates = [];
+						for (let g=0;g<groupCells.length;g++) {
+							let col = groupCells[g];
+							for (let k=0;k<this.nbnumbers;k++) {
+								if (this.sudokuflags[ro][col][k] && groupCandidates.indexOf(k) < 0) {
+									groupCandidates[groupCandidates.length] = k;
 								}
 							}
 						}
-						for (int j=0;j<positionsEmptyCells.size();j++) {
-							int col = positionsEmptyCells.get(j);
-							boolean notIngroup = true;
-							for (int g=0;g<groupCells.length;g++) {
+						for (let j=0;j<positionsEmptyCells.length;j++) {
+							let col = positionsEmptyCells[j];
+							let notIngroup = true;
+							for (let g=0;g<groupCells.length;g++) {
 								if (groupCells[g] == col) {
 									notIngroup = false;
 									break;
@@ -890,17 +856,9 @@ class Puzzle {
 							}
 							if (notIngroup) {
 								//suppress candidates
-								for (int cand=0;cand<groupCandidates.size();cand++) {
-									if (sudokuflags[ro][col][groupCandidates.get(cand)]) {
-										if (showsteps) {
-											System.out.print("visible group row " + ro + " for values ");
-											for (int g=0;g<groupSize;g++) {
-												System.out.print((groupCandidates.get(g)+1) + " " );
-											}
-											System.out.println();
-											System.out.println("Remove candidate k" + (groupCandidates.get(cand)+1) + " r" + ro + " c" + col);
-										}
-										sudokuflags[ro][col][groupCandidates.get(cand)] = false;
+								for (let cand=0;cand<groupCandidates.length;cand++) {
+									if (this.sudokuflags[ro][col][groupCandidates[cand]]) {
+										this.sudokuflags[ro][col][groupCandidates[cand]] = false;
 										hasSimplyfied = true;
 									}
 								}
@@ -911,41 +869,41 @@ class Puzzle {
 			}
 		}
 		//col
-		for (int c=0;c<nbnumbers;c++) {
-			ArrayList<Integer> positionsEmptyCells = new ArrayList<Integer>();
-			for (int ro=0;ro<nbnumbers;ro++) {
+		for (let c=0;c<this.nbnumbers;c++) {
+			let positionsEmptyCells = [];
+			for (let ro=0;ro<this.nbnumbers;ro++) {
 				if (sudoku[ro][c] == 0) {
-					positionsEmptyCells.add(c);
+					positionsEmptyCells[positionsEmptyCells.length] = ro;
 				}
 			}
-			if (positionsEmptyCells.size() >= 2*groupSize) {
-				for (int i=0;i<positionsEmptyCells.size()+1-groupSize;i++) {
-					int groupCells[] = new int[groupSize];
-					groupCells[0] = positionsEmptyCells.get(i);
-					int nbCandidates = 0;
-					for (int k=0;k<nbnumbers;k++) {
-						if (sudokuflags[groupCells[0]][c][k]) {
+			if (positionsEmptyCells.length >= 2*groupSize) {
+				for (let i=0;i<positionsEmptyCells.length+1-groupSize;i++) {
+					let groupCells = [];
+					groupCells[0] = positionsEmptyCells[i];
+					let nbCandidates = 0;
+					for (let k=0;k<this.nbnumbers;k++) {
+						if (this.sudokuflags[groupCells[0]][c][k]) {
 							nbCandidates++;
 						}
 					}
-					groupCells = searchVisibleGroupColsRecursive(c, sudokuflags, positionsEmptyCells, groupSize,
+					groupCells = this.searchVisibleGroupColsRecursive(c, positionsEmptyCells, groupSize,
 							i+1, groupCells, 1, nbCandidates);
 					if (groupCells != null) {
 						//group found
-						ArrayList<Integer> groupCandidates = new ArrayList<>();
-						for (int g=0;g<groupCells.length;g++) {
-							int row = groupCells[g];
-							for (int k=0;k<nbnumbers;k++) {
-								if (sudokuflags[row][c][k] && !groupCandidates.contains(k)) {
-									groupCandidates.add(k);
+						let groupCandidates = [];
+						for (let g=0;g<groupCells.length;g++) {
+							let row = groupCells[g];
+							for (let k=0;k<this.nbnumbers;k++) {
+								if (this.sudokuflags[row][c][k] && groupCandidates.indexOf(k) < 0) {
+									groupCandidates[groupCandidates.length] = k;
 								}
 							}
 						}
 						
-						for (int j=0;j<positionsEmptyCells.size();j++) {
-							int ro = positionsEmptyCells.get(j);
-							boolean notIngroup = true;
-							for (int g=0;g<groupCells.length;g++) {
+						for (let j=0;j<positionsEmptyCells.length;j++) {
+							let ro = positionsEmptyCells[j];
+							let notIngroup = true;
+							for (let g=0;g<groupCells.length;g++) {
 								if (groupCells[g] == ro) {
 									notIngroup = false;
 									break;
@@ -953,17 +911,9 @@ class Puzzle {
 							}
 							if (notIngroup) {
 								//suppress candidates
-								for (int cand=0;cand<groupCandidates.size();cand++) {
-									if (sudokuflags[ro][c][groupCandidates.get(cand)]) {
-										if (showsteps) {
-											System.out.print("visible group col " + c + " for values ");
-											for (int g=0;g<groupSize;g++) {
-												System.out.print((groupCandidates.get(g)+1) + " " );
-											}
-											System.out.println();
-											System.out.println("Remove candidate k" + (groupCandidates.get(cand)+1) + " r" + ro + " c" + c);
-										}
-										sudokuflags[ro][c][groupCandidates.get(cand)] = false;
+								for (let cand=0;cand<groupCandidates.length;cand++) {
+									if (this.sudokuflags[ro][c][groupCandidates[cand]]) {
+										this.sudokuflags[ro][c][groupCandidates[cand]] = false;
 										hasSimplyfied = true;
 									}
 								}
@@ -975,48 +925,48 @@ class Puzzle {
 		}
 		
 		//block
-		for (int b=0;b<nbnumbers;b++) {
-			ArrayList<Integer> positionsEmptyCells = new ArrayList<Integer>();
-			int rowblock = (b/nbrowsperblock)*nbrowsperblock;
-			int colblock = (b%nbrowsperblock)*nbcolsperblock;
-			for (int pos=0;pos<nbnumbers;pos++) {
-				int rob = rowblock + pos/nbcolsperblock;
-				int roc = colblock + pos%nbcolsperblock;
+		for (let b=0;b<this.nbnumbers;b++) {
+			let positionsEmptyCells = [];
+			let rowblock = Math.floor(b/this.nbrowsperblock)*this.nbrowsperblock;
+			let colblock = (b%this.nbrowsperblock)*this.nbcolsperblock;
+			for (let pos=0;pos<this.nbnumbers;pos++) {
+				let rob = rowblock + Math.floor(pos/this.nbcolsperblock);
+				let roc = colblock + pos%this.nbcolsperblock;
 				if (sudoku[rob][roc] == 0) {
-					positionsEmptyCells.add(pos);
+					positionsEmptyCells[positionsEmptyCells.length] = pos;
 				}
 			}
-			if (positionsEmptyCells.size() >= 2*groupSize) {
-				for (int i=0;i<positionsEmptyCells.size()+1-groupSize;i++) {
-					int groupCells[] = new int[groupSize];
-					groupCells[0] = positionsEmptyCells.get(i);
-					int nbCandidates = 0;
-					int rob = rowblock + groupCells[0]/nbcolsperblock;
-					int roc = colblock + groupCells[0]%nbcolsperblock;
-					for (int k=0;k<nbnumbers;k++) {
-						if (sudokuflags[rob][roc][k]) {
+			if (positionsEmptyCells.length >= 2*groupSize) {
+				for (let i=0;i<positionsEmptyCells.length+1-groupSize;i++) {
+					let groupCells = [];
+					groupCells[0] = positionsEmptyCells[i];
+					let nbCandidates = 0;
+					let rob = rowblock + Math.floor(groupCells[0]/this.nbcolsperblock);
+					let roc = colblock + groupCells[0]%this.nbcolsperblock;
+					for (let k=0;k<this.nbnumbers;k++) {
+						if (this.sudokuflags[rob][roc][k]) {
 							nbCandidates++;
 						}
 					}
-					groupCells = searchVisibleGroupBlocksRecursive(rowblock, colblock, sudokuflags, positionsEmptyCells, groupSize,
+					groupCells = this.searchVisibleGroupBlocksRecursive(rowblock, colblock, positionsEmptyCells, groupSize,
 							i+1, groupCells, 1, nbCandidates);
 					if (groupCells != null) {
 						//group found
-						ArrayList<Integer> groupCandidates = new ArrayList<>();
-						for (int g=0;g<groupCells.length;g++) {
-							int row =  rowblock + groupCells[g]/nbcolsperblock;
-							int c =  colblock + groupCells[g]%nbcolsperblock;
-							for (int k=0;k<nbnumbers;k++) {
-								if (sudokuflags[row][c][k] && !groupCandidates.contains(k)) {
-									groupCandidates.add(k);
+						let groupCandidates = [];
+						for (let g=0;g<groupCells.length;g++) {
+							let row =  rowblock + Math.floor(groupCells[g]/this.nbcolsperblock);
+							let c =  colblock + groupCells[g]%this.nbcolsperblock;
+							for (let k=0;k<this.nbnumbers;k++) {
+								if (this.sudokuflags[row][c][k] && groupCandidates.indexOf(k) < 0) {
+									groupCandidates[groupCandidates.length] = k;
 								}
 							}
 						}
 						
-						for (int j=0;j<positionsEmptyCells.size();j++) {
-							int pos = positionsEmptyCells.get(j);
-							boolean notIngroup = true;
-							for (int g=0;g<groupCells.length;g++) {
+						for (let j=0;j<positionsEmptyCells.length;j++) {
+							let pos = positionsEmptyCells[j];
+							let notIngroup = true;
+							for (let g=0;g<groupCells.length;g++) {
 								if (groupCells[g] == pos) {
 									notIngroup = false;
 									break;
@@ -1024,19 +974,11 @@ class Puzzle {
 							}
 							if (notIngroup) {
 								//suppress candidates
-								int ro =  rowblock + pos/nbcolsperblock;
-								int c =  colblock + pos%nbcolsperblock;
-								for (int cand=0;cand<groupCandidates.size();cand++) {
-									if (sudokuflags[ro][c][groupCandidates.get(cand)]) {
-										if (showsteps) {
-											System.out.print("visible group block " + b + " for values ");
-											for (int g=0;g<groupSize;g++) {
-												System.out.print((groupCandidates.get(g)+1) + " " );
-											}
-											System.out.println();
-											System.out.println("Remove candidate k" + (groupCandidates.get(cand)+1) + " r" + ro + " c" + c);
-										}
-										sudokuflags[ro][c][groupCandidates.get(cand)] = false;
+								let ro =  rowblock + Math.floor(pos/this.nbcolsperblock);
+								let c =  colblock + pos%this.nbcolsperblock;
+								for (let cand=0;cand<groupCandidates.length;cand++) {
+									if (this.sudokuflags[ro][c][groupCandidates[cand]]) {
+										this.sudokuflags[ro][c][groupCandidates[cand]] = false;
 										hasSimplyfied = true;
 									}
 								}
@@ -1049,29 +991,29 @@ class Puzzle {
 		return hasSimplyfied;
 	}
 	
-	int[] searchVisibleGroupRowsRecursive(int row, boolean sudokuflags[][][], ArrayList<Integer> positionsEmptyCells, int groupSize,
-			int index, int partialGroup[], int step, int nbCandidates) {
+	searchVisibleGroupRowsRecursive(row, positionsEmptyCells, groupSize,
+			index, partialGroup, step, nbCandidates) {
 		if (nbCandidates > groupSize) {
 			return null;
 		}
 		if (step == groupSize) {
 			return partialGroup;
 		}
-		for (int i=index;i<positionsEmptyCells.size();i++) {
-			partialGroup[step] = positionsEmptyCells.get(i);
+		for (let i=index;i<positionsEmptyCells.length;i++) {
+			partialGroup[step] = positionsEmptyCells[i];
 			nbCandidates = 0;
-			ArrayList<Integer> candidatesGroup = new ArrayList<Integer>();
-			for (int k=0;k<nbnumbers;k++) {
-				for (int j=0;j<=step;j++) {
-					if (sudokuflags[row][partialGroup[j]][k]) {
-						if (!candidatesGroup.contains(k)) {
-							candidatesGroup.add(k);
+			let candidatesGroup = [];
+			for (let k=0;k<this.nbnumbers;k++) {
+				for (let j=0;j<=step;j++) {
+					if (this.sudokuflags[row][partialGroup[j]][k]) {
+						if (candidatesGroup.indexOf(k) < 0) {
+							candidatesGroup.push(k);
 							nbCandidates++;
 						}
 					}
 				}
 			}
-			int group[] = searchVisibleGroupRowsRecursive(row, sudokuflags, positionsEmptyCells, groupSize,
+			let group = this.searchVisibleGroupRowsRecursive(row, positionsEmptyCells, groupSize,
 					i+1, partialGroup, step+1, nbCandidates);
 			if (group != null) {
 				return group;
@@ -1080,29 +1022,29 @@ class Puzzle {
 		return null;
 	}
 	
-	int[] searchVisibleGroupColsRecursive(int col, boolean sudokuflags[][][], ArrayList<Integer> positionsEmptyCells, int groupSize,
-			int index, int partialGroup[], int step, int nbCandidates) {
+	searchVisibleGroupColsRecursive(col, positionsEmptyCells, groupSize,
+			index, partialGroup, step, nbCandidates) {
 		if (nbCandidates > groupSize) {
 			return null;
 		}
 		if (step == groupSize) {
 			return partialGroup;
 		}
-		for (int i=index;i<positionsEmptyCells.size();i++) {
-			partialGroup[step] = positionsEmptyCells.get(i);
+		for (let i=index;i<positionsEmptyCells.length;i++) {
+			partialGroup[step] = positionsEmptyCells[i];
 			nbCandidates = 0;
-			ArrayList<Integer> candidatesGroup = new ArrayList<Integer>();
-			for (int k=0;k<nbnumbers;k++) {
-				for (int j=0;j<=step;j++) {
-					if (sudokuflags[partialGroup[j]][col][k]) {
-						if (!candidatesGroup.contains(k)) {
-							candidatesGroup.add(k);
+			let candidatesGroup = [];
+			for (let k=0;k<this.nbnumbers;k++) {
+				for (let j=0;j<=step;j++) {
+					if (this.sudokuflags[partialGroup[j]][col][k]) {
+						if (candidatesGroup.indexOf(k) < 0) {
+							candidatesGroup[candidatesGroup.length] = k;
 							nbCandidates++;
 						}
 					}
 				}
 			}
-			int group[] = searchVisibleGroupColsRecursive(col, sudokuflags, positionsEmptyCells, groupSize,
+			let group = this.searchVisibleGroupColsRecursive(col, positionsEmptyCells, groupSize,
 					i+1, partialGroup, step+1, nbCandidates);
 			if (group != null) {
 				return group;
@@ -1111,8 +1053,8 @@ class Puzzle {
 		return null;
 	}
 	
-	int[] searchVisibleGroupBlocksRecursive(int rowblock, int colblock, boolean sudokuflags[][][], ArrayList<Integer> positionsEmptyCells, int groupSize,
-			int index, int partialGroup[], int step, int nbCandidates) {
+	searchVisibleGroupBlocksRecursive(rowblock, colblock, positionsEmptyCells, groupSize,
+			index, partialGroup, step, nbCandidates) {
 		if (nbCandidates > groupSize) {
 			return null;
 		}
@@ -1121,23 +1063,23 @@ class Puzzle {
 		}
 		
 		
-		for (int i=index;i<positionsEmptyCells.size();i++) {
-			partialGroup[step] = positionsEmptyCells.get(i);
+		for (let i=index;i<positionsEmptyCells.length;i++) {
+			partialGroup[step] = positionsEmptyCells[i];
 			nbCandidates = 0;
-			ArrayList<Integer> candidatesGroup = new ArrayList<Integer>();
-			for (int k=0;k<nbnumbers;k++) {
-				for (int j=0;j<=step;j++) {
-					int rob = rowblock + partialGroup[j]/nbcolsperblock;
-					int roc = colblock + partialGroup[j]%nbcolsperblock;
-					if (sudokuflags[rob][roc][k]) {
-						if (!candidatesGroup.contains(k)) {
-							candidatesGroup.add(k);
+			let candidatesGroup = [];
+			for (let k=0;k<this.nbnumbers;k++) {
+				for (let j=0;j<=step;j++) {
+					let rob = rowblock + Math.floor(partialGroup[j]/this.nbcolsperblock);
+					let roc = colblock + partialGroup[j]%this.nbcolsperblock;
+					if (this.sudokuflags[rob][roc][k]) {
+						if (candidatesGroup.indexOf(k) < 0) {
+							candidatesGroup[candidatesGroup.length] = k;
 							nbCandidates++;
 						}
 					}
 				}
 			}
-			int group[] = searchVisibleGroupBlocksRecursive(rowblock, colblock, sudokuflags, positionsEmptyCells, groupSize,
+			let group = this.searchVisibleGroupBlocksRecursive(rowblock, colblock, positionsEmptyCells, groupSize,
 					i+1, partialGroup, step+1, nbCandidates);
 			if (group != null) {
 				return group;
@@ -1146,44 +1088,44 @@ class Puzzle {
 		return null;
 	}
 	
-	boolean simplifyByNakedGroups(Integer sudoku[][], boolean sudokuflags[][][], boolean numberMissingRow[][], boolean numberMissingCol[][], boolean numberMissingBlock[][], int groupSize) {
+	simplifyByNakedGroups(sudoku, groupSize) {
 		//naked pairs, triplets, ...
-		boolean hasSimplyfied = false;
+		let hasSimplyfied = false;
 		//row
-		for (int row=0;row<nbnumbers;row++) {
-			ArrayList<Integer> missingNumbersList = new ArrayList<Integer>();
-			for (int k=0;k<nbnumbers;k++) {
-				if (numberMissingRow[row][k]) {
-					missingNumbersList.add(k+1);
+		for (let row=0;row<this.nbnumbers;row++) {
+			let missingNumbersList = [];
+			for (let k=0;k<this.nbnumbers;k++) {
+				if (this.numberMissingRow[row][k]) {
+					missingNumbersList[missingNumbersList.length] = k+1;
 				}
 			}
-			if (missingNumbersList.size() >= 2*groupSize) {
-				for (int i=0;i<missingNumbersList.size()+1-groupSize;i++) {
-					int groupNumbers[] = new int[groupSize];
-					groupNumbers[0] = missingNumbersList.get(i);
-					int nbCandidatesPos = 0;
-					for (int c=0;c<nbnumbers;c++) {
-						if (sudoku[row][c]==0 && sudokuflags[row][c][groupNumbers[0]]) {
+			if (missingNumbersList.length >= 2*groupSize) {
+				for (let i=0;i<missingNumbersList.length+1-groupSize;i++) {
+					let groupNumbers = [];
+					groupNumbers[0] = missingNumbersList[i];
+					let nbCandidatesPos = 0;
+					for (let c=0;c<this.nbnumbers;c++) {
+						if (sudoku[row][c]==0 && this.sudokuflags[row][c][groupNumbers[0]]) {
 							nbCandidatesPos++;
 						}
 					}
-					groupNumbers = searchNakedGroupRowsRecursive(sudoku, row, sudokuflags, missingNumbersList, groupSize,
+					groupNumbers = this.searchNakedGroupRowsRecursive(sudoku, row, missingNumbersList, groupSize,
 							i+1, groupNumbers, 1, nbCandidatesPos);
 					if (groupNumbers != null) {
 						//group found
-						ArrayList<Integer> groupCandidatesPos = new ArrayList<>();
-						for (int g=0;g<groupNumbers.length;g++) {
-							int k = groupNumbers[g]-1;
-							for (int c=0;c<nbnumbers;c++) {
-								if (sudoku[row][c]==0 && sudokuflags[row][c][k] && !groupCandidatesPos.contains(c)) {
-									groupCandidatesPos.add(c);
+						let groupCandidatesPos = [];
+						for (let g=0;g<groupNumbers.length;g++) {
+							let k = groupNumbers[g]-1;
+							for (let c=0;c<this.nbnumbers;c++) {
+								if (sudoku[row][c]==0 && this.sudokuflags[row][c][k] && groupCandidatesPos.indexOf(c) < 0) {
+									groupCandidatesPos[groupCandidatesPos.length] = c;
 								}
 							}
 						}
-						for (int j=0;j<missingNumbersList.size();j++) {
-							int k = missingNumbersList.get(j)-1;
-							boolean notIngroup = true;
-							for (int g=0;g<groupNumbers.length;g++) {
+						for (let j=0;j<missingNumbersList.length;j++) {
+							let k = missingNumbersList[j]-1;
+							let notIngroup = true;
+							for (let g=0;g<groupNumbers.length;g++) {
 								if (groupNumbers[g] == k+1) {
 									notIngroup = false;
 									break;
@@ -1191,17 +1133,9 @@ class Puzzle {
 							}
 							if (notIngroup) {
 								//suppress candidates
-								for (int cand=0;cand<groupCandidatesPos.size();cand++) {
-									if (sudoku[row][groupCandidatesPos.get(cand)]==0 && sudokuflags[row][groupCandidatesPos.get(cand)][k]) {
-										if (showsteps) {
-											System.out.print("naked group row " + row + " for values ");
-											for (int g=0;g<groupSize;g++) {
-												System.out.print((groupNumbers[g]+1) + " " );
-											}
-											System.out.println();
-											System.out.println("Remove candidate k" + (k+1) + " r" + row + " c" + groupCandidatesPos.get(cand));
-										}
-										sudokuflags[row][groupCandidatesPos.get(cand)][k] = false;
+								for (let cand=0;cand<groupCandidatesPos.length;cand++) {
+									if (sudoku[row][groupCandidatesPos[cand]]==0 && this.sudokuflags[row][groupCandidatesPos[cand]][k]) {
+										this.sudokuflags[row][groupCandidatesPos[cand]][k] = false;
 										hasSimplyfied = true;
 									}
 								}
@@ -1212,40 +1146,40 @@ class Puzzle {
 			}
 		}
 		//col
-		for (int col=0;col<nbnumbers;col++) {
-			ArrayList<Integer> missingNumbersList = new ArrayList<Integer>();
-			for (int k=0;k<nbnumbers;k++) {
-				if (numberMissingCol[col][k]) {
-					missingNumbersList.add(k+1);
+		for (let col=0;col<this.nbnumbers;col++) {
+			let missingNumbersList = [];
+			for (let k=0;k<this.nbnumbers;k++) {
+				if (this.numberMissingCol[col][k]) {
+					missingNumbersList[missingNumbersList.length] = k+1;
 				}
 			}
-			if (missingNumbersList.size() >= 2*groupSize) {
-				for (int i=0;i<missingNumbersList.size()+1-groupSize;i++) {
-					int groupNumbers[] = new int[groupSize];
-					groupNumbers[0] = missingNumbersList.get(i);
-					int nbCandidatesPos = 0;
-					for (int ro=0;ro<nbnumbers;ro++) {
-						if (sudoku[ro][col]==0 && sudokuflags[ro][col][groupNumbers[0]]) {
+			if (missingNumbersList.length >= 2*groupSize) {
+				for (let i=0;i<missingNumbersList.length+1-groupSize;i++) {
+					let groupNumbers = [];
+					groupNumbers[0] = missingNumbersList[i];
+					let nbCandidatesPos = 0;
+					for (let ro=0;ro<this.nbnumbers;ro++) {
+						if (sudoku[ro][col]==0 && this.sudokuflags[ro][col][groupNumbers[0]]) {
 							nbCandidatesPos++;
 						}
 					}
-					groupNumbers = searchNakedGroupColsRecursive(sudoku, col, sudokuflags, missingNumbersList, groupSize,
+					groupNumbers = this.searchNakedGroupColsRecursive(sudoku, col, missingNumbersList, groupSize,
 							i+1, groupNumbers, 1, nbCandidatesPos);
 					if (groupNumbers != null) {
 						//group found
-						ArrayList<Integer> groupCandidatesPos = new ArrayList<>();
-						for (int g=0;g<groupNumbers.length;g++) {
-							int k = groupNumbers[g]-1;
-							for (int ro=0;ro<nbnumbers;ro++) {
-								if (sudoku[ro][col]==0 && sudokuflags[ro][col][k] && !groupCandidatesPos.contains(ro)) {
-									groupCandidatesPos.add(ro);
+						let groupCandidatesPos = [];
+						for (let g=0;g<groupNumbers.length;g++) {
+							let k = groupNumbers[g]-1;
+							for (let ro=0;ro<this.nbnumbers;ro++) {
+								if (sudoku[ro][col]==0 && this.sudokuflags[ro][col][k] && groupCandidatesPos.indexOf(ro) < 0) {
+									groupCandidatesPos[groupCandidatesPos.length] = ro;
 								}
 							}
 						}
-						for (int j=0;j<missingNumbersList.size();j++) {
-							int k = missingNumbersList.get(j)-1;
-							boolean notIngroup = true;
-							for (int g=0;g<groupNumbers.length;g++) {
+						for (let j=0;j<missingNumbersList.length;j++) {
+							let k = missingNumbersList[j]-1;
+							let notIngroup = true;
+							for (let g=0;g<groupNumbers.length;g++) {
 								if (groupNumbers[g] == k+1) {
 									notIngroup = false;
 									break;
@@ -1253,17 +1187,9 @@ class Puzzle {
 							}
 							if (notIngroup) {
 								//suppress candidates
-								for (int cand=0;cand<groupCandidatesPos.size();cand++) {
-									if (sudoku[groupCandidatesPos.get(cand)][col]==0 && sudokuflags[groupCandidatesPos.get(cand)][col][k]) {
-										if (showsteps) {
-											System.out.print("naked group col " + col + " for values ");
-											for (int g=0;g<groupSize;g++) {
-												System.out.print((groupNumbers[g]+1) + " " );
-											}
-											System.out.println();
-											System.out.println("Remove candidate k" + (k+1) + " r" + groupCandidatesPos.get(cand) + " c" + col);
-										}
-										sudokuflags[groupCandidatesPos.get(cand)][col][k] = false;
+								for (let cand=0;cand<groupCandidatesPos.length;cand++) {
+									if (sudoku[groupCandidatesPos[cand]][col]==0 && this.sudokuflags[groupCandidatesPos[cand]][col][k]) {
+										this.sudokuflags[groupCandidatesPos[cand]][col][k] = false;
 										hasSimplyfied = true;
 									}
 								}
@@ -1274,46 +1200,46 @@ class Puzzle {
 			}
 		}
 		//block
-		for (int b=0;b<nbnumbers;b++) {
-			ArrayList<Integer> missingNumbersList = new ArrayList<Integer>();
-			for (int k=0;k<nbnumbers;k++) {
-				if (numberMissingBlock[b][k]) {
-					missingNumbersList.add(k+1);
+		for (let b=0;b<this.nbnumbers;b++) {
+			let missingNumbersList = [];
+			for (let k=0;k<this.nbnumbers;k++) {
+				if (this.numberMissingBlock[b][k]) {
+					missingNumbersList[missingNumbersList.length] = k+1;
 				}
 			}
-			int rowblock = (b/nbrowsperblock)*nbrowsperblock;
-			int colblock = (b%nbrowsperblock)*nbcolsperblock;
-			if (missingNumbersList.size() >= 2*groupSize) {
-				for (int i=0;i<missingNumbersList.size()+1-groupSize;i++) {
-					int groupNumbers[] = new int[groupSize];
-					groupNumbers[0] = missingNumbersList.get(i);
-					int nbCandidatesPos = 0;
-					for (int pos=0;pos<nbnumbers;pos++) {
-						int rob = rowblock + pos/nbcolsperblock;
-						int roc = colblock + pos%nbcolsperblock;
-						if (sudoku[rob][roc]==0 && sudokuflags[rob][roc][groupNumbers[0]]) {
+			let rowblock = Math.floor(b/this.nbrowsperblock)*this.nbrowsperblock;
+			let colblock = (b%this.nbrowsperblock)*this.nbcolsperblock;
+			if (missingNumbersList.length >= 2*groupSize) {
+				for (let i=0;i<missingNumbersList.length+1-groupSize;i++) {
+					let groupNumbers = [];
+					groupNumbers[0] = missingNumbersList[i];
+					let nbCandidatesPos = 0;
+					for (let pos=0;pos<this.nbnumbers;pos++) {
+						let rob = rowblock + Math.floor(pos/this.nbcolsperblock);
+						let roc = colblock + pos%this.nbcolsperblock;
+						if (sudoku[rob][roc]==0 && this.sudokuflags[rob][roc][groupNumbers[0]]) {
 							nbCandidatesPos++;
 						}
 					}
-					groupNumbers = searchNakedGroupBlocksRecursive(sudoku,rowblock, colblock, sudokuflags, missingNumbersList, groupSize,
+					groupNumbers = this.searchNakedGroupBlocksRecursive(sudoku,rowblock, colblock, missingNumbersList, groupSize,
 							i+1, groupNumbers, 1, nbCandidatesPos);
 					if (groupNumbers != null) {
 						//group found
-						ArrayList<Integer> groupCandidatesPos = new ArrayList<>();
-						for (int g=0;g<groupNumbers.length;g++) {
-							for (int pos=0;pos<nbnumbers;pos++) {
-								int row =  rowblock + pos/nbcolsperblock;
-								int c =  colblock + pos%nbcolsperblock;
-								if (sudoku[row][c]==0 && sudokuflags[row][c][groupNumbers[g]-1] && !groupCandidatesPos.contains(pos)) {
-									groupCandidatesPos.add(pos);
+						let groupCandidatesPos = [];
+						for (let g=0;g<groupNumbers.length;g++) {
+							for (let pos=0;pos<this.nbnumbers;pos++) {
+								let row =  rowblock + Math.floor(pos/this.nbcolsperblock);
+								let c =  colblock + pos%this.nbcolsperblock;
+								if (sudoku[row][c]==0 && this.sudokuflags[row][c][groupNumbers[g]-1] && groupCandidatesPos.indexOf(pos) < 0) {
+									groupCandidatesPos[groupCandidatesPos.length] = pos;
 								}
 							}
 						}
 						
-						for (int j=0;j<missingNumbersList.size();j++) {
-							int k = missingNumbersList.get(j)-1;
-							boolean notIngroup = true;
-							for (int g=0;g<groupNumbers.length;g++) {
+						for (let j=0;j<missingNumbersList.length;j++) {
+							let k = missingNumbersList[j]-1;
+							let notIngroup = true;
+							for (let g=0;g<groupNumbers.length;g++) {
 								if (groupNumbers[g] == k+1) {
 									notIngroup = false;
 									break;
@@ -1321,19 +1247,11 @@ class Puzzle {
 							}
 							if (notIngroup) {
 								//suppress candidates
-								for (int cand=0;cand<groupCandidatesPos.size();cand++) {
-									int ro =  rowblock + groupCandidatesPos.get(cand)/nbcolsperblock;
-									int c =  colblock + groupCandidatesPos.get(cand)%nbcolsperblock;
-									if (sudokuflags[ro][c][k]) {
-										if (showsteps) {
-											System.out.print("naked group block " + b + " for values ");
-											for (int g=0;g<groupSize;g++) {
-												System.out.print((groupNumbers[g]+1) + " " );
-											}
-											System.out.println();
-											System.out.println("Remove candidate k" + (k+1) + " r" + ro + " c" + c);
-										}
-										sudokuflags[ro][c][k] = false;
+								for (let cand=0;cand<groupCandidatesPos.length;cand++) {
+									let ro =  rowblock + Math.floor(groupCandidatesPos[cand]/this.nbcolsperblock);
+									let c =  colblock + Math.floor(groupCandidatesPos[cand]%this.nbcolsperblock);
+									if (this.sudokuflags[ro][c][k]) {
+										this.sudokuflags[ro][c][k] = false;
 										hasSimplyfied = true;
 									}
 								}
@@ -1346,29 +1264,29 @@ class Puzzle {
 		return hasSimplyfied;
 	}
 	
-	int[] searchNakedGroupRowsRecursive(Integer sudoku[][],int row, boolean sudokuflags[][][], ArrayList<Integer> missingNumbers, int groupSize,
-			int index, int partialGroup[], int step, int nbCandidatesPos) {
+	searchNakedGroupRowsRecursive(sudoku, row, missingNumbers, groupSize,
+			index, partialGroup, step, nbCandidatesPos) {
 		if (nbCandidatesPos > groupSize) {
 			return null;
 		}
 		if (step == groupSize) {
 			return partialGroup;
 		}
-		for (int i=index;i<missingNumbers.size();i++) {
-			partialGroup[step] = missingNumbers.get(i);
+		for (let i=index;i<missingNumbers.length;i++) {
+			partialGroup[step] = missingNumbers[i];
 			nbCandidatesPos = 0;
-			ArrayList<Integer> candidatesGroup = new ArrayList<Integer>();
-			for (int j=0;j<=step;j++) {
-				for (int c=0;c<nbnumbers;c++) {
-					if (sudoku[row][c]==0 && sudokuflags[row][c][partialGroup[j]-1]) {
-						if (!candidatesGroup.contains(c)) {
-							candidatesGroup.add(c);
+			let candidatesGroup = [];
+			for (let j=0;j<=step;j++) {
+				for (let c=0;c<this.nbnumbers;c++) {
+					if (sudoku[row][c]==0 && this.sudokuflags[row][c][partialGroup[j]-1]) {
+						if (candidatesGroup.indexOf(c) < 0) {
+							candidatesGroup[candidatesGroup.length] = c;
 							nbCandidatesPos++;
 						}
 					}
 				}
 			}
-			int group[] = searchNakedGroupRowsRecursive(sudoku, row, sudokuflags, missingNumbers, groupSize,
+			let group = this.searchNakedGroupRowsRecursive(sudoku, row, missingNumbers, groupSize,
 					i+1, partialGroup, step+1, nbCandidatesPos);
 			if (group != null) {
 				return group;
@@ -1377,29 +1295,29 @@ class Puzzle {
 		return null;
 	}
 	
-	int[] searchNakedGroupColsRecursive(Integer sudoku[][],int col, boolean sudokuflags[][][], ArrayList<Integer> missingNumbers, int groupSize,
-			int index, int partialGroup[], int step, int nbCandidatesPos) {
+	searchNakedGroupColsRecursive(sudoku, col, missingNumbers, groupSize,
+		index, partialGroup, step, nbCandidatesPos) {
 		if (nbCandidatesPos > groupSize) {
 			return null;
 		}
 		if (step == groupSize) {
 			return partialGroup;
 		}
-		for (int i=index;i<missingNumbers.size();i++) {
-			partialGroup[step] = missingNumbers.get(i);
+		for (let i=index;i<missingNumbers.length;i++) {
+			partialGroup[step] = missingNumbers[i];
 			nbCandidatesPos = 0;
-			ArrayList<Integer> candidatesGroup = new ArrayList<Integer>();
-			for (int j=0;j<=step;j++) {
-				for (int ro=0;ro<nbnumbers;ro++) {
-					if (sudoku[ro][col]==0 && sudokuflags[ro][col][partialGroup[j]-1]) {
-						if (!candidatesGroup.contains(ro)) {
-							candidatesGroup.add(ro);
+			let candidatesGroup = [];
+			for (let j=0;j<=step;j++) {
+				for (let ro=0;ro<this.nbnumbers;ro++) {
+					if (sudoku[ro][col]==0 && this.sudokuflags[ro][col][partialGroup[j]-1]) {
+						if (candidatesGroup.indexOf(ro) < 0) {
+							candidatesGroup[candidatesGroup.length] = ro;
 							nbCandidatesPos++;
 						}
 					}
 				}
 			}
-			int group[] = searchNakedGroupColsRecursive(sudoku, col, sudokuflags, missingNumbers, groupSize,
+			let group = this.searchNakedGroupColsRecursive(sudoku, col, missingNumbers, groupSize,
 					i+1, partialGroup, step+1, nbCandidatesPos);
 			if (group != null) {
 				return group;
@@ -1408,31 +1326,31 @@ class Puzzle {
 		return null;
 	}
 	
-	int[] searchNakedGroupBlocksRecursive(Integer sudoku[][], int rowblock, int colblock, boolean sudokuflags[][][], ArrayList<Integer> missingNumbers, int groupSize,
-			int index, int partialGroup[], int step, int nbCandidatesPos) {
+	searchNakedGroupBlocksRecursive(sudoku, rowblock, colblock, missingNumbers, groupSize,
+			index, partialGroup, step, nbCandidatesPos) {
 		if (nbCandidatesPos > groupSize) {
 			return null;
 		}
 		if (step == groupSize) {
 			return partialGroup;
 		}
-		for (int i=index;i<missingNumbers.size();i++) {
-			partialGroup[step] = missingNumbers.get(i);
+		for (let i=index;i<missingNumbers.length;i++) {
+			partialGroup[step] = missingNumbers[i];
 			nbCandidatesPos = 0;
-			ArrayList<Integer> candidatesGroup = new ArrayList<Integer>();
-			for (int j=0;j<=step;j++) {
-				for (int pos=0;pos<nbnumbers;pos++) {
-					int ro = rowblock + pos/nbcolsperblock;
-					int col = colblock + pos%nbcolsperblock;
-					if (sudoku[ro][col]==0 && sudokuflags[ro][col][partialGroup[j]-1]) {
-						if (!candidatesGroup.contains(pos)) {
-							candidatesGroup.add(pos);
+			let candidatesGroup = [];
+			for (let j=0;j<=step;j++) {
+				for (let pos=0;pos<this.nbnumbers;pos++) {
+					let ro = rowblock + Math.floor(pos/this.nbcolsperblock);
+					let col = colblock + pos%this.nbcolsperblock;
+					if (sudoku[ro][col]==0 && this.sudokuflags[ro][col][partialGroup[j]-1]) {
+						if (candidatesGroup.indexOf(pos) < 0) {
+							candidatesGroup[candidatesGroup.length] = pos;
 							nbCandidatesPos++;
 						}
 					}
 				}
 			}
-			int group[] = searchNakedGroupBlocksRecursive(sudoku, rowblock, colblock, sudokuflags, missingNumbers, groupSize,
+			let group = this.searchNakedGroupBlocksRecursive(sudoku, rowblock, colblock, missingNumbers, groupSize,
 					i+1, partialGroup, step+1, nbCandidatesPos);
 			if (group != null) {
 				return group;
@@ -1441,7 +1359,7 @@ class Puzzle {
 		return null;
 	}
 	
-	boolean simplifyBySwordFishes(Integer sudoku[][], boolean sudokuflags[][][], boolean numberMissingRow[][], boolean numberMissingCol[][], boolean numberMissingBlock[][], int groupSize) {
+	/*boolean simplifyBySwordFishes(Integer sudoku[][], boolean sudokuflags[][][], boolean numberMissingRow[][], boolean numberMissingCol[][], boolean numberMissingBlock[][], int groupSize) {
 		//for example X-Wing for position pairs
 		boolean hasSimplyfied = false;
 		for (int k=0;k<nbnumbers;k++) {
